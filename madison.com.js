@@ -21,4 +21,3 @@ ready(function () {
   interval = setInterval(doRemoval, 250);
   doRemoval();
 });
-console.log('yo dawg!');
