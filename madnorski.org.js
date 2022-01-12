@@ -52,7 +52,7 @@ const colorFromScore = (score) => {
 const textColorFromBG = (color) => {
   const m = /^(?<red>[a-f0-9]{2})(?<green>[a-f0-9]{2})(?<blue>[a-f0-9]{2})$/i.exec(color);
 
-  let Ys = Math.pow(parseInt(m.groups.red, 16) / 255.0, 2.2) * 0.2126 +
+  const Ys = Math.pow(parseInt(m.groups.red, 16) / 255.0, 2.2) * 0.2126 +
       Math.pow(parseInt(m.groups.green, 16) / 255.0, 2.2) * 0.7152 +
       Math.pow(parseInt(m.groups.blue, 16) / 255.0, 2.2) * 0.0722; 
 
@@ -137,7 +137,7 @@ const produceReport = (data) => {
   const mkup = [];
   let lineStyles = [];
   
-  mkup.push('<table class="venueScores">');
+  
   const sortedVenues = [];
   Object.keys(data)
     .forEach((k, idx) => {
@@ -159,23 +159,44 @@ const produceReport = (data) => {
     return 0;
   });
 
+  // mkup.push('<table class="venueScores">');
+  // sortedVenues.forEach((d, idx) => {
+  //   const bgColor = colorFromScore(d.score);
+  //   const textColor = textColorFromBG(bgColor);
+  //   const maxDays = Math.min(8, d.daysOld);
+  //   const lightenBy = ((15 - maxDays) / 10);
+  //   const rating = textFromScore(d.score);
+    
+  //   lineStyles.push(`.venueScores tr.venue-${idx} td { text-align: center; min-width: 50px; padding: 3px; background-color: #${bgColor}; color: #${textColor}; filter: brightness(${lightenBy}); }`);
+  //   lineStyles.push(`.venueScores tr.venue-${idx} a { color: #${textColor}; }`);
+
+  //   mkup.push(`<tr class="venue-${idx}">`);
+  //   mkup.push(`<td style="text-align: right;"><a href="#${d.venueID}">${d.venue}</a></td>`);
+  //   mkup.push(`<td>${d.score}</td>`);
+  //   mkup.push(`<td>${d.daysOld.toFixed(0)} days ago</td>`);
+  //   mkup.push('</tr>')
+  // });
+  // mkup.push('</table>');
+
+  mkup.push('<div class="venueScores">');
   sortedVenues.forEach((d, idx) => {
     const bgColor = colorFromScore(d.score);
     const textColor = textColorFromBG(bgColor);
     const maxDays = Math.min(8, d.daysOld);
     const lightenBy = ((15 - maxDays) / 10);
     const rating = textFromScore(d.score);
-    lineStyles.push(`.venueScores tr.venue-${idx} td { text-align: center; min-width: 50px; padding: 3px; background-color: #${bgColor}; color: #${textColor}; filter: brightness(${lightenBy}); }`);
-    lineStyles.push(`.venueScores tr.venue-${idx} a { color: #${textColor}; }`);
-    mkup.push(`<tr class="venue-${idx}">`);
-    mkup.push(`<td style="text-align: right;"><a href="#${d.venueID}">${d.venue}</a></td>`);
-    // mkup.push(`<td>${rating}</td>`);
-    mkup.push(`<td>${d.score}</td>`);
-    mkup.push(`<td>${d.daysOld.toFixed(0)} days ago</td>`);
-    mkup.push('</tr>')
-  });
+    
+    lineStyles.push(`.venueScores .venue-${idx} div { text-align: center; min-width: 50px; padding: 3px; background-color: #${bgColor}; color: #${textColor}; filter: brightness(${lightenBy}); }`);
+    lineStyles.push(`.venueScores .venue-${idx} a { color: #${textColor}; }`);
 
-  mkup.push('</table>');
+    mkup.push(`<div class="venue-${idx} row">`);
+    mkup.push(`  <div class="col-md-6 col-8" style="text-align: right;"><a href="#${d.venueID}">${d.venue}</a></div>`);
+    mkup.push(`  <div class="col-md-2 col-4">${d.score}</div>`);
+    mkup.push(`  <div class="col-md-4 d-none d-sm-node d-md-inline-block">${d.daysOld.toFixed(0)} days ago</div>`);
+    mkup.push('</div>')
+  });
+  mkup.push('</div>');
+
   mkup.push('<style>');
   mkup.push(lineStyles.join("\n"));
   mkup.push('</style>');
