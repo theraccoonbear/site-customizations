@@ -6,6 +6,21 @@ function ready(fn) {
   }
 }
 
+const textFromScore = (score) => {
+  switch (score) {
+    case 5:
+      return 'excellent';
+    case 4:
+      return 'good';
+    case 3:
+      return 'fair';
+    case 2:
+      return 'poor';
+    default:
+      return 'no-go';
+  }
+};
+
 const scoreFromText = (description) => {
   switch (description.toLowerCase()) {
     case 'excellent':
@@ -49,11 +64,12 @@ const begin = async () => {
   const now = new Date();
   const contentSections = document.getElementsByClassName('entry-content');
   for (const content of contentSections) {
-    const headsAndEntries = Array.from(content.querySelectorAll('b, table tr')).slice(1);
+    const headsAndEntries = Array.from(content.querySelectorAll('b, table tr, a[name]')).slice(1);
     // console.log('headsAndEntries', typeof headsAndEntries);
     // console.log(headsAndEntries);
     let lines = [];
     let venue = '[unknown]';
+    let venueID = 'id-unknown';
     for (let i = 0; i < headsAndEntries.length; i++) {
       const heading = headsAndEntries[i];
       // console.log(i, heading.tagName);
@@ -96,18 +112,24 @@ const begin = async () => {
             allScores[venue] = {
               entries: lines,
               score: lines[0] ? lines[0].score : 1,
+              venue,
+              venueID,
               daysOld: (now.getTime() - ts) / 1000 / 60 / 60 / 24,
             };
           }
           break;
         case 'b': // venue
           venue = heading.innerText;
+          const before = heading.previousElementSibling;
+          if (before && before.tagName.toLowerCase() == 'a' && before.attributes.name) {
+            console.log(venue, before.attributes.name.nodeValue);
+            venueID = before.attributes.name.nodeValue;
+          }
           lines = [];
           break;
       }
     }
   }
-  console.log(allScores);
   produceReport(allScores);
 };
 
@@ -116,26 +138,50 @@ const produceReport = (data) => {
   let lineStyles = [];
   
   mkup.push('<table class="venueScores">');
+  const sortedVenues = [];
   Object.keys(data)
     .forEach((k, idx) => {
-      const bgColor = colorFromScore(data[k].score);
-      const textColor = textColorFromBG(bgColor);
-      lineStyles.push(`.venueScores tr.venue-${idx} td { text-align: center; min-width: 50px; padding: 3px; background-color: #${bgColor}; color: #${textColor}; }`);
-      mkup.push(`<tr class="venue-${idx}">`);
-      mkup.push(`<td style="text-align: right;">${k}</td>`);
-      mkup.push(`<td>${data[k].score}/5</td>`);
-      mkup.push(`<td>${data[k].daysOld.toFixed(0)} days ago</td>`);
-      mkup.push('</tr>')
+      sortedVenues.push(data[k]);
     });
+
+  sortedVenues.sort((a, b) => {
+    if (a.score < b.score) { 
+      return 1
+    } else if (a.score > b.score) {
+      return -1;
+    }
+    if (a.daysOld < b.daysOld) {
+      return -1;
+    } else if (a.daysOld > b.daysOld) {
+      return 1
+    }
+
+    return 0;
+  });
+
+  sortedVenues.forEach((d, idx) => {
+    const bgColor = colorFromScore(d.score);
+    const textColor = textColorFromBG(bgColor);
+    const maxDays = Math.min(8, d.daysOld);
+    const lightenBy = ((15 - maxDays) / 10);
+    const rating = textFromScore(d.score);
+    lineStyles.push(`.venueScores tr.venue-${idx} td { text-align: center; min-width: 50px; padding: 3px; background-color: #${bgColor}; color: #${textColor}; filter: brightness(${lightenBy}); }`);
+    lineStyles.push(`.venueScores tr.venue-${idx} a { color: #${textColor}; }`);
+    mkup.push(`<tr class="venue-${idx}">`);
+    mkup.push(`<td style="text-align: right;"><a href="#${d.venueID}">${d.venue}</a></td>`);
+    // mkup.push(`<td>${rating}</td>`);
+    mkup.push(`<td>${d.score}</td>`);
+    mkup.push(`<td>${d.daysOld.toFixed(0)} days ago</td>`);
+    mkup.push('</tr>')
+  });
+
   mkup.push('</table>');
   mkup.push('<style>');
   mkup.push(lineStyles.join("\n"));
   mkup.push('</style>');
   document.querySelector("#quickLocationSelector").insertAdjacentHTML("afterend", mkup.join("\n"));
-
 }
 
 ready(function () {
   setTimeout(begin, 250);
 });
-console.log('here we are...');
