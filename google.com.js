@@ -36,7 +36,7 @@ const doRemoval = () => {
 };
 
 ready(function () {
-  setTimeout(doRemoval, 250);
+  setTimeout(clickLinkIfDirected, 250);
 });
 console.log('your entry point here...');
   

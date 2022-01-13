@@ -6,7 +6,7 @@ function ready(fn) {
   }
 }
 
-const doRemoval = () => {
+const useGoogleIfPaywalled = () => {
   const paywall = document.getElementById('gateway-content');
   if (paywall != null) {
     const u = document.location;
@@ -17,6 +17,6 @@ const doRemoval = () => {
 };
 
 ready(function () {
-  setInterval(doRemoval, 250);
+  setInterval(useGoogleIfPaywalled, 250);
 });
 console.log('your entry point here...');
