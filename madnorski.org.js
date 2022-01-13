@@ -122,7 +122,7 @@ const begin = async () => {
           venue = heading.innerText;
           const before = heading.previousElementSibling;
           if (before && before.tagName.toLowerCase() == 'a' && before.attributes.name) {
-            console.log(venue, before.attributes.name.nodeValue);
+            // console.log(venue, before.attributes.name.nodeValue);
             venueID = before.attributes.name.nodeValue;
           }
           lines = [];
@@ -190,9 +190,9 @@ const produceReport = (data) => {
     lineStyles.push(`.venueScores .venue-${idx} a { color: #${textColor}; }`);
 
     mkup.push(`<div class="venue-${idx} row">`);
-    mkup.push(`  <div class="col-md-6 col-8" style="text-align: right;"><a href="#${d.venueID}">${d.venue}</a></div>`);
+    mkup.push(`  <div class="col-md-6 col-8" style="text-align: right;"><a class="venue-link" data-href="${d.venueID}" href="#">${d.venue}</a></div>`);
     mkup.push(`  <div class="col-md-2 col-4">${d.score}</div>`);
-    mkup.push(`  <div class="col-md-4 d-none d-sm-node d-md-inline-block">${d.daysOld.toFixed(0)} days ago</div>`);
+    mkup.push(`  <div class="col-md-4 d-none d-md-inline-block">${d.daysOld.toFixed(0)} days ago</div>`);
     mkup.push('</div>')
   });
   mkup.push('</div>');
@@ -201,8 +201,17 @@ const produceReport = (data) => {
   mkup.push(lineStyles.join("\n"));
   mkup.push('</style>');
   document.querySelector("#quickLocationSelector").insertAdjacentHTML("afterend", mkup.join("\n"));
+  const qls = document.getElementById('quickLocationSelector');
+  document.addEventListener('click', (event) => {
+    if (event.target.matches('a.venue-link')) { 
+      qls.value = event.target.getAttribute('data-href');
+      qls.dispatchEvent(new Event('change'));
+      event.preventDefault();
+    }
+  });
 }
 
 ready(function () {
   setTimeout(begin, 250);
 });
+console.log('your entry point here...');
