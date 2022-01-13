@@ -11,7 +11,7 @@ const clickLinkIfDirected = () => {
   const q = u.search.substring(1);
   const pairs = q.split(/&(amp;)?/);
   const qs = {};
-  const nvp = pairs
+  pairs
     .map(p => {
       if (p) {
         const nv = p.split(/=/, 2);
