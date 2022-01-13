@@ -6,28 +6,31 @@ function ready(fn) {
   }
 }
 
-let originalBody;
+let originalBody, body, html;
+let bodyReplaced = false;
 
 const doRemoval = () => {
   const paywall = document.querySelector('div[data-qa="overlay-container"]');
   if (paywall != null) {
     paywall.remove();
   }
-  const html = document.querySelector('html');
   if (html != null) {
-    html.style.overflow = 'scroll';
+    if (html.style.overflow != 'scroll') {
+      html.style.overflow = 'scroll';
+    }
   }
-  const body = document.querySelector('body');
   if (body != null) {
-    body.style.overflow = 'scroll';
+    if (body.style.overflow != 'scroll') {
+      body.style.overflow = 'scroll';
+    }
     body.innerHTML = originalBody;
   }
 };
 
 ready(function () {
-  const body = document.querySelector('body');
+  html = document.querySelector('html');
+  body = document.querySelector('body');
   originalBody = body.innerHTML;
-  console.log(originalBody);
   setInterval(doRemoval, 250);
 });
 console.log('your entry point here...');
