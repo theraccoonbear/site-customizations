@@ -6,7 +6,7 @@ function ready(fn) {
   }
 }
 
-const doRemoval = () => {
+const clickLinkIfDirected = () => {
   const u = document.location;
   const q = u.search.substring(1);
   const pairs = q.split(/&(amp;)?/);
