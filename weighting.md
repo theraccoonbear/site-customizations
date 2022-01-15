@@ -96,4 +96,6 @@ The format I settled on for presenting the data is:
  * Color code the line by score (rounded up) using (5 = blue, 4 = green, 3 = yellow, 2 = orange, 1 = red)
  * Indicate _confidence_ in the data (how old it is) by shading the particular color band darker as it ages
 
+# Preview
 
+You can see the results of [this experiment](https://theraccoonbear.github.io/site-customizations/improved.html), alongside the [original setup](https://theraccoonbear.github.io/site-customizations/original.html).
