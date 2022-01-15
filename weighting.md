@@ -47,17 +47,17 @@ We continue stepping back days:
 6. We _still_ put a copy of the scores encountered so far onto the tally for the day, thus giving more weight to those new scores: [`4, 4, 5, 5, 4, 5, 4]`
 6. We have a few more days with no scores, but we will continue to weight the newer scores, thus we see the tally with dates they represent.  When we're at -4 days ago, our tally, and the days of the scores represented is:
 ```
-   Tally => [4, 4, 5, 4, 4, 5, 4, 4, 5, 4]
-Days Ago => [0, 0, 1, 1, 0, 1, 1, 0, 1, 1]
+   Tally => [4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4]
+Days Ago => [0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1]
 ```
 
 So, we can see that the "today" score is represented 4 times and each of "one day ago" scores is represented 3 times.
 
 9. We encounter a score of `1` for "five days ago", so we add that to our list of scores encountered: `[4, 5, 4, 1]`
-9. We take our scores encountered and add a copy of them to the full tally: `[4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 1]`
+9. We take our scores encountered and add a copy of them to the full tally: `[4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 1]`
 9. We encounter a score of `2` for "six days ago", so we add that to our list of scores encountered: `[4, 5, 4, 1, 2]`
 9. We _also_ encounter a score of `1` for "one day ago", so we add that to our list of scores encountered: `[4, 5, 4, 1, 2, 1]`
-9. We take our scores encountered and add a copy of them to the full tally: `[4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 1, 4, 5, 4, 1, 2, 1]`
+9. We take our scores encountered and add a copy of them to the full tally: `[4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 1, 4, 5, 4, 1, 2, 1]`
 
 We've now covered all of the days data and we can see the full tally list, along with the days represented:
 
