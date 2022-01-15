@@ -51,7 +51,7 @@ We continue stepping back days:
 Days Ago => [0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1]
 ```
 
-So, we can see that the "today" score is represented 4 times and each of "one day ago" scores is represented 3 times.
+So, we can see that the "today" score is represented 5 times and each of "one day ago" scores is represented 4 times.
 
 9. We encounter a score of `1` for "five days ago", so we add that to our list of scores encountered: `[4, 5, 4, 1]`
 9. We take our scores encountered and add a copy of them to the full tally: `[4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 1]`
