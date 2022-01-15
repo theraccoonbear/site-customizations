@@ -99,3 +99,5 @@ The format I settled on for presenting the data is:
 # Preview
 
 You can see the results of [this experiment](https://theraccoonbear.github.io/site-customizations/improved.html), alongside the [original setup](https://theraccoonbear.github.io/site-customizations/original.html).
+
+The code in question [begins here](https://github.com/theraccoonbear/site-customizations/blob/a8fba2c948a099180f6ad3498e2e71fc853a8e89/madnorski.org.js#L154).
