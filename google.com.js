@@ -1,10 +1,4 @@
-function ready(fn) {
-  if (document.readyState !== 'loading'){
-    fn();
-  } else {
-    document.addEventListener('DOMContentLoaded', fn);
-  }
-}
+// @include standard.js
 
 const clickLinkIfDirected = () => {
   const u = document.location;
@@ -38,5 +32,4 @@ const clickLinkIfDirected = () => {
 ready(function () {
   setTimeout(clickLinkIfDirected, 250);
 });
-console.log('your entry point here...');
   

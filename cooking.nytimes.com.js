@@ -1,10 +1,4 @@
-function ready(fn) {
-  if (document.readyState !== 'loading'){
-    fn();
-  } else {
-    document.addEventListener('DOMContentLoaded', fn);
-  }
-}
+// @include standard.js
 
 const doRemoval = () => {
   const items = document.getElementsByClassName('nytc---modal-window---noScroll');

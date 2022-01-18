@@ -1,10 +1,4 @@
-function ready(fn) {
-  if (document.readyState !== 'loading'){
-    fn();
-  } else {
-    document.addEventListener('DOMContentLoaded', fn);
-  }
-}
+// @include standard.js
 
 const doRemoval = () => {
   const paywall = document.getElementById('gateway-content');
@@ -23,4 +17,3 @@ const doRemoval = () => {
 ready(function () {
   setInterval(doRemoval, 250);
 });
-console.log('your entry point here...');

@@ -1,10 +1,4 @@
-function ready(fn) {
-  if (document.readyState !== 'loading'){
-    fn();
-  } else {
-    document.addEventListener('DOMContentLoaded', fn);
-  }
-}
+// @include standard.js
 
 const textFromScore = (score) => {
   switch (score) {
@@ -257,4 +251,3 @@ const produceReport = (venueList) => {
 ready(function () {
   setTimeout(begin, 250);
 });
-console.log('your entry point here...');

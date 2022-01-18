@@ -1,10 +1,4 @@
-function ready(fn) {
-  if (document.readyState !== 'loading'){
-    fn();
-  } else {
-    document.addEventListener('DOMContentLoaded', fn);
-  }
-}
+// @include standard.js
 
 let originalBody, body, html;
 let bodyReplaced = false;
@@ -23,4 +17,3 @@ ready(function () {
   originalBody = body.innerHTML;
   setInterval(doRemoval, 250);
 });
-console.log('your entry point here...');
