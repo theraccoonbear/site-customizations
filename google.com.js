@@ -15,15 +15,22 @@ const clickLinkIfDirected = () => {
     })
     .filter(Boolean)
     .forEach(nvp => qs[nvp[0]] = nvp[1])
+  
   if (qs.__clickFirstResult) {
-    const link = document.querySelectorAll('#search a:nth-of-type(1)');
-    if (link.length > 0) {
+    const links = Array.from(document.querySelectorAll('#search a'));
+    
+    const valid = links.filter(l => {
+      if (!qs.domain) { return true; }
+      return l.href.includes(qs.domain);
+    });
+
+    if (valid.length > 0) {
       var evt = new MouseEvent('click', {
         bubbles: true,
         cancelable: true,
         view: window
       });
-      link[0].dispatchEvent(evt);
+      valid[0].dispatchEvent(evt);
     }
   }
   

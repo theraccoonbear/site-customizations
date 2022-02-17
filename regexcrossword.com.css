@@ -1,0 +1,12 @@
+
+thead th {
+    position: relative;
+    transform: rotate(-45deg);
+    left: -50px;
+}
+
+tfoot th {
+    position: relative;
+    transform: rotate(-45deg);
+    left: 20px;
+}

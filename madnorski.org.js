@@ -75,7 +75,7 @@ const reviewFromRaw = (newEntry) => {
   }
 }
 
-const begin = async () => {
+const beginOld = async () => {
   const allScores = {};
   const now = new Date();
   const contentSections = document.getElementsByClassName('entry-content');
@@ -191,27 +191,27 @@ const produceReport = (venueList) => {
 
   
 
-  const sortFields = ['weightedScore', 'daysOld'];
+  const sortFields = ['weightedScore', '!daysOld'];
 
   sortedVenues.sort((a, b) => {
-    // for (let i = 0; i < sortFields.length; i++) {
-    //   const f = sortFields[i];
-    //   if (a[f] < b[f]) 
-    // }
-    if (a.weightedScore < b.weightedScore) { 
-      return 1
-    } else if (a.weightedScore > b.weightedScore) {
-      return -1;
-    }
-    if (a.daysOld < b.daysOld) {
-      return -1;
-    } else if (a.daysOld > b.daysOld) {
-      return 1
+    for (let i = 0; i < sortFields.length; i++) {
+      const f = sortFields[i];
+      let reverse = false;
+      if (/^!/.test(f)) {
+        f = f.substring(1);
+        reverse = true;
+      }
+      if (a[f] < b[f]) {
+        return reverse ? -1 : 1;
+      } else if (a[f] > b[f]) {
+        return reverse ? 1 : -1;
+      }
     }
     return 0;
   });
 
   mkup.push('<div class="venueScores">');
+  let lastDaysOld = -1000;
   sortedVenues.forEach((d, idx) => {
     const bgColor = colorFromScore(Math.ceil(d.weightedScore));
     const textColor = textColorFromBG(bgColor);
@@ -222,10 +222,16 @@ const produceReport = (venueList) => {
     lineStyles.push(`.venueScores .venue-${idx} div { text-align: center; padding: 3px; background-color: #${bgColor}; color: #${textColor}; filter: brightness(${lightenBy}); }`);
     lineStyles.push(`.venueScores .venue-${idx} a { color: #${textColor}; }`);
 
+    let daysOldDisp = d.daysOld.toFixed(1);
+    if (lastDaysOld == daysOldDisp) {
+      daysOldDisp = '';
+    }
+    lastDaysOld = daysOldDisp;
+
     mkup.push(`<div class="venue-${idx} row">`);
     mkup.push(`  <div class="col-md-6 col-8" style="text-align: right;"><a class="venue-link" data-href="${d.venueID}" href="#">${d.venue}</a></div>`);
     mkup.push(`  <div class="col-md-2 col-4">${d.weightedScore.toFixed(1)}</div>`);
-    mkup.push(`  <div class="col-md-4 d-none d-md-inline-block">${d.daysOld.toFixed(0)} days ago</div>`);
+    mkup.push(`  <div class="col-md-4 d-none d-md-inline-block">${daysOldDisp} days ago</div>`);
     mkup.push('</div>')
   });
   mkup.push('</div>');
@@ -246,8 +252,8 @@ const produceReport = (venueList) => {
       event.preventDefault();
     }
   });
-}
+};
 
 ready(function () {
-  setTimeout(begin, 250);
+  // setTimeout(begin, 250);
 });

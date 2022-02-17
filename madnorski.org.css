@@ -1,0 +1,9 @@
+/* .reportAnchor {
+    position: relative;
+    top: -15px;
+} */
+
+.focusedReview {
+    background-color: aquamarine;
+    font-weight: bold;   
+}
