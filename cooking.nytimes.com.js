@@ -1,12 +1,10 @@
-// @include standard.js
-
-const doRemoval = () => {
-  const items = document.getElementsByClassName('nytc---modal-window---noScroll');
+const doCookingRemoval = () => {
+  const items = document.querySelectorAll('[class^="modal_modal-window-container"]')
   for (const item of items) {
-    item.classList.remove('nytc---modal-window---noScroll');
+    item.remove();
   }
 };
 
 ready(function () {
-  setInterval(doRemoval, 250);
+  setInterval(doCookingRemoval, 250);
 });

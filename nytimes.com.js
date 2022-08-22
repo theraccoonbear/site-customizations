@@ -1,4 +1,5 @@
 // @include standard.js
+// @include cooking.nytimes.com.js
 
 const doRemoval = () => {
   const paywall = document.getElementById('gateway-content');
