@@ -1,0 +1,14 @@
+/* .relative {
+  width: calc(100% - 50px);
+}
+
+@media (min-width: 768px) {
+  .relative {
+    width: calc(100% - 115px);
+  }
+}
+
+.flex {
+  display: inline-block;
+  white-space: nowrap;
+} */

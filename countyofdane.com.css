@@ -1,0 +1,126 @@
+.embiggen {
+    position: fixed;
+    top: 1px;
+    left: 1px;
+    bottom: 1px;
+    right: 1px;
+    width: 100%;
+    height: 100%;
+}
+
+.mapToggleButton {
+    float: right;
+}
+
+.embiggen #mainWindow, #mapDiv, #mapDiv_root {
+    height: 100% !important;
+}
+
+.loader-overlay {
+    position: fixed;
+    top: 1px;
+    left: 1px;
+    bottom: 1px;
+    right: 1px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(50, 50, 50, 0.75);
+    z-index: 1000;
+}
+
+.hidden {
+    display: none;
+}
+
+.breathe {
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+@keyframes ldio-kzt78hlfuvc {
+  0% { opacity: 1 }
+  100% { opacity: 0 }
+}
+.ldio-kzt78hlfuvc div {
+  left: 90px;
+  top: 15px;
+  position: absolute;
+  animation: ldio-kzt78hlfuvc linear 1s infinite;
+  background: #7188fe;
+  width: 20px;
+  height: 46px;
+  border-radius: 10px / 23px;
+  transform-origin: 10px 85px;
+}.ldio-kzt78hlfuvc div:nth-child(1) {
+  transform: rotate(0deg);
+  animation-delay: -0.9166666666666666s;
+  background: #7188fe;
+}.ldio-kzt78hlfuvc div:nth-child(2) {
+  transform: rotate(30deg);
+  animation-delay: -0.8333333333333334s;
+  background: #7188fe;
+}.ldio-kzt78hlfuvc div:nth-child(3) {
+  transform: rotate(60deg);
+  animation-delay: -0.75s;
+  background: #7188fe;
+}.ldio-kzt78hlfuvc div:nth-child(4) {
+  transform: rotate(90deg);
+  animation-delay: -0.6666666666666666s;
+  background: #7188fe;
+}.ldio-kzt78hlfuvc div:nth-child(5) {
+  transform: rotate(120deg);
+  animation-delay: -0.5833333333333334s;
+  background: #7188fe;
+}.ldio-kzt78hlfuvc div:nth-child(6) {
+  transform: rotate(150deg);
+  animation-delay: -0.5s;
+  background: #7188fe;
+}.ldio-kzt78hlfuvc div:nth-child(7) {
+  transform: rotate(180deg);
+  animation-delay: -0.4166666666666667s;
+  background: #7188fe;
+}.ldio-kzt78hlfuvc div:nth-child(8) {
+  transform: rotate(210deg);
+  animation-delay: -0.3333333333333333s;
+  background: #7188fe;
+}.ldio-kzt78hlfuvc div:nth-child(9) {
+  transform: rotate(240deg);
+  animation-delay: -0.25s;
+  background: #7188fe;
+}.ldio-kzt78hlfuvc div:nth-child(10) {
+  transform: rotate(270deg);
+  animation-delay: -0.16666666666666666s;
+  background: #7188fe;
+}.ldio-kzt78hlfuvc div:nth-child(11) {
+  transform: rotate(300deg);
+  animation-delay: -0.08333333333333333s;
+  background: #7188fe;
+}.ldio-kzt78hlfuvc div:nth-child(12) {
+  transform: rotate(330deg);
+  animation-delay: 0s;
+  background: #7188fe;
+}
+.loadingio-spinner-spinner-2gf4dum8vh4 {
+  width: 200px;
+  height: 200px;
+  display: inline-block;
+  overflow: hidden;
+  background: transparent;
+}
+.ldio-kzt78hlfuvc {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform: translateZ(0) scale(1);
+  backface-visibility: hidden;
+  transform-origin: 0 0; /* see note above */
+}
+.ldio-kzt78hlfuvc div { box-sizing: content-box; }
+
+.spinner {
+    position: absolute;
+    left: 50%;
+    margin-left: -100px;
+    top: 50%;
+    margin-top: -100px;
+}
