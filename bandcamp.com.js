@@ -2,6 +2,8 @@
 
 const dataURI = 'data:image/vndmicrosofticon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADw+ODwAAbmwAAGe3AAByzAAAfswQEI+9DAyKeBgYlxUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB2ZgAAeO0AAG3/AAAk/wAAAP8AAAD/AAAk/yUlpP8AADH7AAAA/wAAAP8AAACWAAAAAAAAAAAAAAAAAAB+jQAAaP8AAHH/AABr/wAAAP9wfpf/cH6X/wAAAP8AAHr/AAAA/3B+l/9wfpf/AAAA/wAAAAAAAAAAAAB+ZgAAWP8BAYD/DAyK/wAAev8AAAD/fYyo/32MqP8AAAD/AAAA/wAAAP99jKj/fYyo/wAAAP8AAAAAAQGAEhMTku0AAGz/AABk/wMDgv8AAGv/AAAt/wAAAP+LnLv/i5y7/4ucu/+LnLv/i5y7/4ucu/8AAAD/AAB/JAAAZWkICIf/BgaF/wAAef8AAEz/AABx/wEBgP8EBDj/AAAA/5qt0P8AAAD/AAAA/5qt0P+ardD/AAAA/wAAbocAAHKxAABe/wAAc/8REZD/AABl/wwMiv8VFZT/AABv/wAALf8AAAD/qL3j/wAAAP+oveP/qL3j/wAAAP8AAHHPAAAe7AAAAP8AAAD/AAAy/wAAev8NDUH/AAAA/wAAAP8BATb/AAAh/wAAAP+1y/T/tcv0/7XL9P8AAAD/AQGA+QAAAP9ygJr/coCa/wAAAP8CAoH/AAAA/3KAmv9ygJr/AAAA/wAAfP8GBjr/AAAA/73U//+91P//AAAA/wAAcvYAAAD/gZGu/4GRrv8AAAD/AAAA/wAAAP+Bka7/gZGu/wAAAP8AAHj/AABu/wAAM/8AAAD/AAAA/wEBNv8AAHPYAAAA/5Olxv+Tpcb/AAAA/5Olxv8AAAD/k6XG/5Olxv8AAAD/Dw+O/wAAaP8AAHn/AABe/wAAWv8AAGv/AAB0lgAAAP+kuN3/pLjd/wAAAP+kuN3/AAAA/6S43f+kuN3/AAAA/wAAW/8AAHL/AAB//wICgf8AAHH/AABy/AAAbTAAAAD/s8nx/7PJ8f+zyfH/AAAA/7PJ8f+zyfH/s8nx/wAAAP8AAH7/AAB//wAAe/8AAGv/AAB7/wAAepwAAAAAAAAA/73U//+91P//AAAA/wAAMP8AAAD/vdT//73U//8AAAD/BweG/wkJiP8AAHX/AABt/wAAfMMcHJsGAAAAAAAAAJYAAAD/AAAA/wAAFbsWFpXwAAAs/wAAAP8AAAD/CAg8/xcXlv8AAF7/AAB49gAAZHUREZADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhGw8PjoQAAGrJAQGA+QkJiP8TE5LMAAB2jQ0NjCcAAAAAAAAAAAAAAAAAAAAA8A8AAOABAADAAQAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAABAAAAAwAA8A8AAA==';
 
+const entsToStrip = ['ZeroWidthSpace', '#8203'];
+
 const makeBCLink = (search, type, appendHere) => {
   if (['band', 'album'].indexOf(type) < 0) { 
     throw new Error(`Invalid Bandcamp link type "${type}"`);
@@ -27,6 +29,19 @@ const makeBCLink = (search, type, appendHere) => {
   return bcLink;
 }
 
+const elemToText = (elem) => {
+  const inner = elem.innerHTML.trim();
+  console.log('inner:', inner);
+  let html = inner.replace(/\p{Cf}/g, '');
+  html = html.replace(/\u200b/g, '');
+  entsToStrip.forEach(e => {
+    html = html.replace(`&${e};`, '')
+    console.log(`replace: &${e}; `, html);
+    console.log(`encoded; `, encodeURIComponent(html));
+  });
+  return html;
+};
+
 const doMetalLinking = () => {
   const tags = [...document.querySelectorAll('.tralbum-tags a')];
   const isMetal = tags.reduce((p, c) => 
@@ -41,8 +56,8 @@ const doMetalLinking = () => {
     const bandSpan = nameSection.querySelector('h3 span');
     const bandLink = bandSpan.querySelector('a');
     
-    const album = albumHead.innerText;
-    const bandName = bandLink.innerText;
+    const album = elemToText(albumHead);
+    const bandName = elemToText(bandLink);
 
     makeBCLink(album, 'album', albumHead);
     makeBCLink(bandName, 'band', bandSpan);
