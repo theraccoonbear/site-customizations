@@ -22,4 +22,3 @@ ready(function () {
   interval = setInterval(doRemoval, 250);
   doRemoval();
 });
-  
