@@ -187,16 +187,6 @@ const fetchCalendar = async (name, email) => {
     .map(e => iCalEvent(e, name, email));
 };
 
-const makeDataURI = (mimeType, data) => `data:${mimeType};charset=utf-8;base64,${btoa(data)}`;
-
-const downloadURI = (uri, name) => {
-  var link = document.createElement("a");
-  link.download = name;
-  link.href = uri;
-  link.click();
-};
-
-
 const generateCalendar = async (name, email) => {
   const cal = await fetchCalendar(name, email);
   // console.log("Calendar:", cal);
