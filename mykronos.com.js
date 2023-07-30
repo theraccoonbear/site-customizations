@@ -1,7 +1,7 @@
 // @include standard.js
 // @include SipHash.js
 
-const debugging = true;
+const debugging = false;
 
 const dbg = (...stuff) => debugging ? console.log(...stuff) : null;
 
@@ -41,14 +41,15 @@ const hoursDiff = (s, e) => (e.getTime() - s.getTime()) / 1000 / 60 / 60;
 const iCalEvent = (e, name, email) => {
   const start = new Date(e.orderedSegments[0].startDateTimeUTC);
   const end = new Date(e.orderedSegments[e.orderedSegments.length - 1].endDateTimeUTC);
-  const elapsed = hoursDiff(start, end).toPrecision(3);
+  const elapsed = hoursDiff(start, end).toPrecision(3).replace(/0+$/, '0');
+  const job  = e.job;
   const iCal = `BEGIN:VEVENT
 UID: ${ hash(iCalDate(start) + iCalDate(end)) }
 DTSTAMP;TZID=America/Chicago:${iCalDate(start)}
 ORGANIZER;CN=${name}:MAILTO:${email}
 DTSTART;TZID=America/Chicago:${iCalDate(start)}
 DTEND;TZID=America/Chicago:${iCalDate(end)}
-SUMMARY:REI from ${time(start)} to ${time(end)} on ${date(start)} (${elapsed} hours)
+SUMMARY:REI (${job}) from ${time(start)} to ${time(end)} on ${date(start)} (${elapsed} hours)
 END:VEVENT`
   return {
   ...event,
@@ -75,7 +76,7 @@ const fetchCalendar = async (name, email) => {
       "Referer": "https://recreationalequip-ss3.prd.mykronos.com/ess",
       "Referrer-Policy": "strict-origin-when-cross-origin"
     },
-    "body": "{\"startDate\":\"2023-06-25\",\"endDate\":\"2023-08-05\",\"types\":[{\"name\":\"approvedtimeoffrequest\",\"order\":2,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/approvedtimeoffrequest/template.html\"},{\"name\":\"regularshift\",\"order\":3,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/regularshift/template.html\"},{\"name\":\"paid_leave_time_all_cases\",\"order\":4,\"domain\":\"LEAVE\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/paid_leave_time_all_cases/template.html\"},{\"name\":\"paycodeedit\",\"order\":5,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/paycodeedit/template.html\"},{\"name\":\"transfershift\",\"order\":6,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/transfershift/template.html\"},{\"name\":\"swaprequest\",\"order\":7,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/swaprequests/template.html\"},{\"name\":\"openshiftrequest\",\"order\":8,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/openshiftrequest/template.html\"},{\"name\":\"openshift\",\"order\":9,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/openshift/template.html\"},{\"name\":\"coverrequest\",\"order\":10,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/coverrequests/template.html\"}],\"configId\":3004002,\"isRestEndpoint\":true}",
+    "body": "{\"startDate\":\"2023-06-25\",\"endDate\":\"2023-08-30\",\"types\":[{\"name\":\"approvedtimeoffrequest\",\"order\":2,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/approvedtimeoffrequest/template.html\"},{\"name\":\"regularshift\",\"order\":3,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/regularshift/template.html\"},{\"name\":\"paid_leave_time_all_cases\",\"order\":4,\"domain\":\"LEAVE\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/paid_leave_time_all_cases/template.html\"},{\"name\":\"paycodeedit\",\"order\":5,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/paycodeedit/template.html\"},{\"name\":\"transfershift\",\"order\":6,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/transfershift/template.html\"},{\"name\":\"swaprequest\",\"order\":7,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/swaprequests/template.html\"},{\"name\":\"openshiftrequest\",\"order\":8,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/openshiftrequest/template.html\"},{\"name\":\"openshift\",\"order\":9,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/openshift/template.html\"},{\"name\":\"coverrequest\",\"order\":10,\"domain\":\"SCHEDULING\",\"isExclusivelyFrontEnd\":false,\"visible\":true,\"group\":[\"filters\"],\"template\":\"components/employeeView/eventDefinitions/coverrequests/template.html\"}],\"configId\":3004002,\"isRestEndpoint\":true}",
     "method": "POST"
   });
 
@@ -86,6 +87,8 @@ const fetchCalendar = async (name, email) => {
   if (!Array.isArray(body)) {
     throw new Error(`Non-array response!`);
   }
+  console.log('raw cal:', body);
+
   return body.map(e => {
     // console.log(e);
     const ice = iCalEvent(e, name, email);
@@ -139,8 +142,6 @@ const begin = async () => {
   button.innerHTML = 'Download vCal';
   button.addEventListener('click', generateCalendar.bind(this, 'Me', 'me@host.com'))
   schedHead.parentElement.appendChild(button);
-
-  // generateCalendar("Me", "me@host.com");
 };
 
 ready(begin);
