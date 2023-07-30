@@ -8,8 +8,6 @@ const stringToUUID = (str) => {
 
 const MAX_TRIES = 100;
 
-const sleep = async (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
 const getToolbar = async (c) => {
   const cnt = typeof c === 'undefined' ? 1 : c;
   // console.info(`tb/inv=${cnt}`);

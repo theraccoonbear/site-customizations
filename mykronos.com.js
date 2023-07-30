@@ -1,6 +1,12 @@
 // @include standard.js
 // @include SipHash.js
 
+const debugging = true;
+
+const dbg = (...stuff) => debugging ? console.log(...stuff) : null;
+
+const MAX_TRIES = 100;
+
 const stringToUUID = (str) => {
   str = str.replace('-', '');
   return 'xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx'.replace(/[x]/g, (c, p) => str[p % str.length]);
@@ -98,33 +104,43 @@ PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 ${iCalEvents}
 END:VCALENDAR`;
 
-  console.log("\n\n");
-  console.log(iCalFull);
+  // console.log("\n\n");
+/  // console.log(iCalFull);
 
-  // downloadURI(makeDataURI("text/calendar", iCalFull), "schedule.vcs");
+  downloadURI(makeDataURI("text/calendar", iCalFull), "schedule.vcs");
 };
 
-
-// const cloneButton = (srcBtn, label, icon) => {
-//   const text = srcBtn
-//     .getInnerHTML()
-//     .replace(/id="([^"]+)"/g, 'id="$1_foo"');
-//   const container = document.createElement('div');
-//   container.innerHTML = text;
-
-//   const iconElem = container.querySelector('button i');
-//   iconElem.classList = "";
-//   iconElem.classList.add(`icon-k-${icon}`);
-
-//   const lblElem = container.querySelector('.icon-label span');
-//   lblElem.innerHTML = label;
-
-//   return container.children.item(0);
-// }
-
+const getToolbar = async (c) => {
+  const cnt = typeof c === 'undefined' ? 1 : c;
+  dbg(`tb/inv=${cnt}`);
+  const toolbar = document.getElementById('firstElement');
+  if (toolbar !== null) {
+    dbg(`retrieved toolbar on try ${cnt}`);
+    return toolbar.parentElement;
+  } else {
+    dbg(`tb/miss=${cnt}`);
+  }
+  if (cnt >= MAX_TRIES) {
+    dbg(`giving up on toolbar after ${cnt}!`);
+    return null;
+  }
+  await sleep(250);
+  if (toolbar === null) { 
+    dbg(`tb/recinv=${cnt}`);
+    return getToolbar(cnt + 1);
+  }
+  return null;
+};
 
 const begin = async () => {
-  generateCalendar("Me", "me@host.com");
+  const schedHead = await getToolbar();
+  const button = document.createElement('button');
+  button.setAttribute('value', 'Download vCal');
+  button.innerHTML = 'Download vCal';
+  button.addEventListener('click', generateCalendar.bind(this, 'Me', 'me@host.com'))
+  schedHead.parentElement.appendChild(button);
+
+  // generateCalendar("Me", "me@host.com");
 };
 
 ready(begin);

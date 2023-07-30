@@ -32,5 +32,7 @@ const downloadURI = (uri, name) => {
   link.click();
 };
 
+const sleep = async (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 // Make this last
 console.log('your script debugging entry point here...');
