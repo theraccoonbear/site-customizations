@@ -14,10 +14,17 @@ ready(function () {
       document.location = url;
     }
 
+    const co = document.getElementById('complianceOverlay');
+    if (co) {
+      co.remove();
+    }
+
     const dock = document.querySelectorAll('.expanded-dock');
     for (let d of dock) {
       d.remove();
     }
+
+    document.body.style.overflow = 'scroll';
   };
 
   setInterval(doRemoval, 250);

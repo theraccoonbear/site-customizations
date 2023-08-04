@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "dts-bundle-generator": "^8.0.1",
+    "esbuild": "^0.18.17",
+    "typescript": "^5.1.6"
+  },
+  "scripts": {
+    "build": "npx tsc",
+    "build:watch": "npx tsc -w",
+    "build:full": "npx tsc && node build.js && cp dist/mykronos.com.js ../mykronos.com.js",
+    "build:fuller": "npx tsc && node build.js && npx dts-bundle-generator -o dist/mykronos.com.d.ts src/mykronos.com.ts && cp dist/mykronos.com.js ../mykronos.com.js"
+  }
+}

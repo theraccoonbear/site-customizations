@@ -1,11 +1,6 @@
 // @include standard.js
 // @include SipHash.js
 
-const stringToUUID = (str) => {
-  str = str.replace('-', '');
-  return 'xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx'.replace(/[x]/g, (c, p) => str[p % str.length]);
-};
-
 const MAX_TRIES = 100;
 
 const getToolbar = async (c) => {
@@ -35,37 +30,7 @@ const err = (message, payload) => {
   return typeof payload === 'undefined' ? [] : payload;
 };
 
-const dateAdd = (date, days) => {
-  const d = new Date(date);
-  d.setDate(date.getDate() + days);
-  return d.toISOString().split('T')[0];
-};
-
 const isoDate = (dt) => dt.toISOString().replace(/[:-]+/g, '').replace(/\..*$/, '');
-
-const iCalDate = (dt) => {
-  const d = new Date(dt);
-  const year = d.getFullYear();
-  const mon = `${(d.getMonth() + 1 < 10 ? '0' : '')}${d.getMonth() + 1}`;
-  const dom = (d.getDate() < 10 ? '0' : '') + d.getDate();
-  const hr = (d.getHours() < 10 ? '0' : '') + d.getHours();
-  const min = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
-  const sec = (d.getSeconds() < 10 ? '0' : '') + d.getSeconds();
-  return `${year}${mon}${dom}T${hr}${min}${sec}`;
-}
-
-const time = dt => dt
-  .toLocaleTimeString('en-US', 
-    { hour12: true, hour: 'numeric', minute: '2-digit', second: '2-digit' }
-  )
-  .replace(/:\d{2}\s+/, ' ');
-
-const date = dt => dt
-  .toLocaleDateString('en-US',
-    { weekday: 'short', month: 'short', day: 'numeric' }
-  );
-
-const hash = (m) => stringToUUID(SipHash.hash_hex("calendarFoo", m))
 
 const iCalEvent = (event, name, email) => {
   const start = new Date(event.start);
@@ -76,7 +41,7 @@ DTSTAMP;TZID=America/Chicago:${iCalDate(start)}
 ORGANIZER;CN=${name}:MAILTO:${email}
 DTSTART;TZID=America/Chicago:${iCalDate(start)}
 DTEND;TZID=America/Chicago:${iCalDate(end)}
-SUMMARY:REI from ${time(start)} to ${time(end)} on ${date(start)}
+SUMMARY:Employer from ${time(start)} to ${time(end)} on ${date(start)}
 END:VEVENT`
   return {
   ...event,

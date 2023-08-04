@@ -1,21 +1,37 @@
+import { SipHash } from './SipHash.js';
 
-window.ready = (fn) => {
+export const ready = (fn: Function): void => {
   if (document.readyState !== 'loading'){
     fn();
   } else {
-    document.addEventListener('DOMContentLoaded', fn);
+    document.addEventListener('DOMContentLoaded', fn as any);
   }
 };
 
-// @include SipHash.js
+(window as any).ready = ready;
 
-const decodeHtml = (html) => {
+const MAX_TRIES = 100; // 10 seconds
+
+export const retrySelector = async (query: string, cnt?: number): Promise<NodeListOf<Element>> => {
+  cnt = typeof cnt === 'number' ? cnt : 1;
+  const elem = document.querySelectorAll(query); 
+  if (elem && elem.length > 0) {
+    return elem;
+  } else if (cnt > MAX_TRIES) {
+    throw new Error(`Unable to find '${query}'; giving up.`);
+  }
+  console.debug(`#${cnt} selector miss on '${query}'`);
+  await sleep(100);
+  return retrySelector(query, cnt + 1);
+} 
+
+export const decodeHtml = (html: any): string => {
   var txt = document.createElement("textarea");
   txt.innerHTML = html;
   return txt.value;
 };
-
-const runForPath = async (path, func) => {
+  
+export const runForPath = async (path: string, func: Function) => {
   const rgx = new RegExp(path, 'i');
   if (rgx.test(document.location.pathname)) {
     console.log(`Conditional path match for "${path}"`);
@@ -25,29 +41,32 @@ const runForPath = async (path, func) => {
     })
   }
 };
-
-const makeDataURI = (mimeType, data) => `data:${mimeType};charset=utf-8;base64,${btoa(data)}`;
-
-const downloadURI = (uri, name) => {
+  
+export const makeDataURI = (mimeType: string, data: string) => 
+  `data:${mimeType};charset=utf-8;base64,${btoa(data)}`;
+  
+export const downloadURI = (uri: string, name: string) => {
   var link = document.createElement("a");
   link.download = name;
   link.href = uri;
   link.click();
 };
+  
+export const hash = (m: any): string => stringToUUID(SipHash.hash_hex("calendarFoo", m))
 
-const hash = (m) => stringToUUID(SipHash.hash_hex("calendarFoo", m))
+export const minutesDiff = (s: Date, e: Date): number => (e.getTime() - s.getTime()) / 1000 / 60;
 
-const hoursDiff = (s, e) => (e.getTime() - s.getTime()) / 1000 / 60 / 60;
+export const hoursDiff = (s: Date, e: Date): number => minutesDiff(s, e) / 60;
 
-const sleep = async (ms) => new Promise(resolve => setTimeout(resolve, ms));
+export const sleep = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const dateAdd = (date, days) => {
+export const dateAdd = (date: any, days: number): string => {
   const d = new Date(date);
   d.setDate(date.getDate() + days);
   return d.toISOString().split('T')[0];
 };
 
-const iCalDate = (dt) => {
+export const iCalDate = (dt: any): string => {
   const d = new Date(dt);
   const year = d.getFullYear();
   const mon = `${(d.getMonth() + 1 < 10 ? '0' : '')}${d.getMonth() + 1}`;
@@ -58,26 +77,30 @@ const iCalDate = (dt) => {
   return `${year}${mon}${dom}T${hr}${min}${sec}`;
 }
 
-const time = dt => dt
+export const time = (dt: Date): string => dt
   .toLocaleTimeString('en-US', 
     { hour12: true, hour: 'numeric', minute: '2-digit', second: '2-digit' }
   )
   .replace(/:\d{2}\s+/, ' ');
 
-const date = dt => dt
+export const date = (dt: Date): string => dt
   .toLocaleDateString('en-US',
     { weekday: 'short', month: 'short', day: 'numeric' }
   );
 
 
-const stringToUUID = (str) => {
+export const stringToUUID = (str: string): string => {
   str = str.replace('-', '');
   return 'xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx'.replace(/[x]/g, (c, p) => str[p % str.length]);
 };
 
-const makeRequest = async (method, uri, payload, headers, respType) => {
+export const srt = (m: string ) => m.toLowerCase()
+  .replace(/[a-z]/gi, letter => 
+    String.fromCharCode(letter.charCodeAt(0) + (letter.toLowerCase() <= 'm' ? 13 : -13)))
+
+export const makeRequest = async (method: string, uri: string, payload?: string | null , headers?: any, respType?: string) => {
   method = method.trim().toUpperCase();
-  payload = typeof payload === 'undefined' ? null : payload.toString();
+  payload = typeof payload === 'undefined' || payload === null ? null : payload.toString();
   headers = typeof headers === 'undefined' ? {} : { ...headers };
   respType = typeof respType === 'string' && respType.toLowerCase() === 'text' ? 'text' : 'json';
   let body, contentType;
@@ -122,12 +145,12 @@ const makeRequest = async (method, uri, payload, headers, respType) => {
   return respType == 'text' ? resp.text() : resp.json();
 };
 
-const headREST = (uri, payload, headers) => makeRequest('head', uri, payload, headers);
-const getREST = (uri, payload, headers) => makeRequest('get', uri, payload, headers);
-const postREST = (uri, payload, headers) => makeRequest('post', uri, payload, headers);
-const putREST = (uri, payload, headers) => makeRequest('put', uri, payload, headers);
-const patchREST = (uri, payload, headers) => makeRequest('patch', uri, payload, headers);
-const deleteREST = (uri, payload, headers) => makeRequest('delete', uri, payload, headers);
+export const headREST = (uri: string, payload?: string, headers?: any) => makeRequest('head', uri, payload, headers);
+export const getREST = (uri: string, payload?: string, headers?: any) => makeRequest('get', uri, payload, headers);
+export const postREST = (uri: string, payload?: string, headers?: any) => makeRequest('post', uri, payload, headers);
+export const putREST = (uri: string, payload?: string, headers?: any) => makeRequest('put', uri, payload, headers);
+export const patchREST = (uri: string, payload?: string, headers?: any) => makeRequest('patch', uri, payload, headers);
+export const deleteREST = (uri: string, payload?: string, headers?: any) => makeRequest('delete', uri, payload, headers);
 
 // * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # 
 // # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # * # *
@@ -137,3 +160,4 @@ const deleteREST = (uri, payload, headers) => makeRequest('delete', uri, payload
 
 // @todo:Make this last
 console.log('your script debugging entry point here...');
+  
