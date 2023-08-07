@@ -10,6 +10,8 @@ With vCal or iCal exports, one can trivially import their work schedule into alm
 
 The real issue is that the data is all there, it's just not being given to the user in a simple format that they can use.  Here we provide a simple piece of JavaScript that requests the user's shift information and creates a vCal export file for them.
 
-Drag this Bookmarklet to your browser's Bookmark toolbar to have it handy whenever you visit the Dimensions site.
+Create a [bookmarklet](https://en.wikipedia.org/wiki/Bookmarklet) in your browser's bookmark toolbar using this JavaScript snippet to have it handy whenever you visit the Dimensions site:
 
-<a href="javascript:'use strict';(()=>{const e=`https://javascript-cdn-8712.s3.amazonaws.com/`,o=[`mykronos.com.js`],n=()=>{o.forEach(a=>{const t=document.createElement(`script`);t.type=`text/javascript`,t.src=`${e}${a}`,t.onload=()=>{new Function(`generateCalendar('Me', 'me@host.com')`)()},document.body.appendChild(t)})};document.readyState!==`loading`?n():document.addEventListener(`DOMContentLoaded`,n)})();).">Export vCal</a>
+```js
+javascript:"use strict";(()=>{const e="https://javascript-cdn-8712.s3.amazonaws.com/",o=["mykronos.com.js"],n=()=>{o.forEach(a=>{const t=document.createElement("script");t.type="text/javascript",t.src=`${e}${a}?_cb=${Math.random()}`,t.onload=()=>{new Function("generateCalendar('Me', 'me@host.com')")()},document.body.appendChild(t)})};document.readyState!=="loading"?n():document.addEventListener("DOMContentLoaded",n)})();
+```
