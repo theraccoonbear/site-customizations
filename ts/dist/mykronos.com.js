@@ -1,5 +1,304 @@
-"use strict";var U=function(){"use strict";function t(n,o){var s=n.l+o.l,d={h:n.h+o.h+(s/2>>>31)>>>0,l:s>>>0};n.h=d.h,n.l=d.l}function e(n,o){n.h^=o.h,n.h>>>=0,n.l^=o.l,n.l>>>=0}function r(n,o){var s={h:n.h<<o|n.l>>>32-o,l:n.l<<o|n.h>>>32-o};n.h=s.h,n.l=s.l}function i(n){var o=n.l;n.l=n.h,n.h=o}function a(n,o,s,d){t(n,o),t(s,d),r(o,13),r(d,16),e(o,n),e(d,s),i(n),t(s,o),t(n,d),r(o,17),r(d,21),e(o,s),e(d,n),i(s)}function l(n,o){return n[o+3]<<24|n[o+2]<<16|n[o+1]<<8|n[o]}function m(n,o){typeof o=="string"&&(o=g(o));var s={h:n[1]>>>0,l:n[0]>>>0},d={h:n[3]>>>0,l:n[2]>>>0},u={h:s.h,l:s.l},h=s,f={h:d.h,l:d.l},p=d,x=o.length,w=x-7,c=new Uint8Array(new ArrayBuffer(8));e(u,{h:1936682341,l:1886610805}),e(f,{h:1685025377,l:1852075885}),e(h,{h:1819895653,l:1852142177}),e(p,{h:1952801890,l:2037671283});for(var y=0;y<w;){var v={h:l(o,y+4),l:l(o,y)};e(p,v),a(u,f,h,p),a(u,f,h,p),e(u,v),y+=8}c[7]=x;for(var T=0;y<x;)c[T++]=o[y++];for(;T<7;)c[T++]=0;var R={h:c[7]<<24|c[6]<<16|c[5]<<8|c[4],l:c[3]<<24|c[2]<<16|c[1]<<8|c[0]};e(p,R),a(u,f,h,p),a(u,f,h,p),e(u,R),e(h,{h:0,l:255}),a(u,f,h,p),a(u,f,h,p),a(u,f,h,p),a(u,f,h,p);var D=u;return e(D,f),e(D,h),e(D,p),D}function g(n){if(typeof TextEncoder=="function")return new TextEncoder().encode(n);n=unescape(encodeURIComponent(n));for(var o=new Uint8Array(n.length),s=0,d=n.length;s<d;s++)o[s]=n.charCodeAt(s);return o}return{hash:m,hash_hex:function(n,o){var s=m(n,o);return("0000000"+s.h.toString(16)).substr(-8)+("0000000"+s.l.toString(16)).substr(-8)},hash_uint:function(n,o){var s=m(n,o);return 4294967296*(2097151&s.h)+s.l},string16_to_key:function(n){var o=g(n);if(o.length!==16)throw Error("Key length must be 16 bytes");var s=new Uint32Array(4);return s[0]=l(o,0),s[1]=l(o,4),s[2]=l(o,8),s[3]=l(o,12),s},string_to_u8:g}}();var k=t=>{document.readyState!=="loading"?t():document.addEventListener("DOMContentLoaded",t)};window.ready=k;var Z=100,b=async(t,e)=>{e=typeof e=="number"?e:1;let r=document.querySelectorAll(t);if(r&&r.length>0)return r;if(e>Z)throw new Error(`Unable to find '${t}'; giving up.`);return console.debug(`#${e} selector miss on '${t}'`),await O(100),b(t,e+1)};var A=async(t,e)=>{new RegExp(t,"i").test(document.location.pathname)&&(console.log(`Conditional path match for "${t}"`),k(()=>{console.log(`Executing for "${t}"`),e()}))},I=(t,e)=>`data:${t};charset=utf-8;base64,${btoa(e)}`,N=(t,e)=>{var r=document.createElement("a");r.download=e,r.href=t,r.click()},M=t=>V(U.hash_hex("calendarFoo",t)),S=(t,e)=>(e.getTime()-t.getTime())/1e3/60,L=(t,e)=>S(t,e)/60,O=async t=>new Promise(e=>setTimeout(e,t)),C=(t,e)=>{let r=new Date(t);return r.setDate(t.getDate()+e),r.toISOString().split("T")[0]},E=t=>{let e=new Date(t),r=e.getFullYear(),i=`${e.getMonth()+1<10?"0":""}${e.getMonth()+1}`,a=(e.getDate()<10?"0":"")+e.getDate(),l=(e.getHours()<10?"0":"")+e.getHours(),m=(e.getMinutes()<10?"0":"")+e.getMinutes(),g=(e.getSeconds()<10?"0":"")+e.getSeconds();return`${r}${i}${a}T${l}${m}${g}`},$=t=>t.toLocaleTimeString("en-US",{hour12:!0,hour:"numeric",minute:"2-digit",second:"2-digit"}).replace(/:\d{2}\s+/," "),P=t=>t.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}),V=t=>(t=t.replace("-",""),"xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx".replace(/[x]/g,(e,r)=>t[r%t.length])),_=t=>t.toLowerCase().replace(/[a-z]/gi,e=>String.fromCharCode(e.charCodeAt(0)+(e.toLowerCase()<="m"?13:-13))),Y=async(t,e,r,i,a)=>{t=t.trim().toUpperCase(),r=typeof r>"u"||r===null?null:r.toString(),i=typeof i>"u"?{}:{...i},a=typeof a=="string"&&a.toLowerCase()==="text"?"text":"json";let l,m;t!="get"&&t!="head"&&(l={body:r},m={"content-type":"application/json"});let g=await fetch(e,{headers:{accept:"application/json, text/plain, */*","accept-language":"en-US,en;q=0.9",...m,"cache-control":"no-cache","device-type":"desktop",page:"home",pragma:"no-cache","sec-ch-ua":'"Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"',"sec-ch-ua-mobile":"?0","sec-ch-ua-platform":'"macOS"',"sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1",...i},referrerPolicy:"strict-origin-when-cross-origin",...l,method:t,mode:"cors",credentials:"include"});if(!g.ok)throw console.warn("Failed request:",e,g),new Error(`Error performing ${t} for ${e}`);if(g.status.toString().indexOf("2")!==0)throw new Error(`Received ${g.status} ${g.statusText}. ${t.trim().toUpperCase()} ${e}`);return a=="text"?g.text():g.json()};var j=(t,e,r)=>Y("post",t,e,r);console.log("your script debugging entry point here...");var q=_(atob("ZXJwZXJuZ3ZiYW55cmRodmMtZmYzLmNlcS56bHhlYmFiZi5wYno=")),F=atob("UkVJ"),H=t=>{let e=1;return console.log(t,t.match(/.{1,75}/)),(t.match(/.{1,75}/g)??[]).map(r=>(console.log("p",r),`${r}\r
- `+" ".repeat(e++))).join("").trim()},B=(t,e,r)=>{let i=new Date(t.orderedSegments[0].startDateTimeUTC),a=new Date(t.orderedSegments[t.orderedSegments.length-1].endDateTimeUTC),l=t.orderedSegments.filter(c=>c.segmentType.symbolicId==="break_segment"),m=l.map(c=>S(new Date(c.startDateTimeUTC),new Date(c.endDateTimeUTC))).reduce((c,y)=>c+y,0),g=l.map(c=>$(new Date(c.startDateTimeUTC))).join(", "),n=m>0?`${m} minutes break at ${g}`:"no breaks",o=L(i,a),s=o.toPrecision(3).replace(/0+$/,"0"),d=(o-m/60).toPrecision(3).replace(/0+$/,"0"),u=t.job,h=`${F} from ${$(i)} to ${$(a)} (${s} [${d}] hours)`,f=`Shift in ${u} at ${F} from ${$(i)} to ${$(a)} on ${P(i)}. ${s} hours with ${n}`,x=";TZID=America/Chicago",w=["BEGIN:VEVENT",`UID: ${M(E(i)+E(a))}`,`DTSTAMP${x}:${E(i)}`,`ORGANIZER;CN=${e}:MAILTO:${r}`,`DTSTART${x}:${E(i)}`,`DTEND${x}:${E(a)}`,`${H(`SUMMARY:${h}`)}`,`${H(`DESCRIPTION:${f}`)}`,"END:VEVENT"].join(`\r
-`);return{...t,iCal:w}},G=t=>`https://${q}${t}`;var J=()=>document.cookie.split(/;\s*/).map(t=>t.split(/=/)).filter(t=>t[0]=="XSRF-TOKEN").reduce((t,e)=>e[1],""),z=()=>{let t=new Date,e=C(t,-14),r=C(t,14);return{startDate:e,endDate:r,types:[{name:"approvedtimeoffrequest"},{name:"holiday"},{name:"inprogresstimeoffrequest"},{name:"openshift"},{name:"paycodeedit"},{name:"regularshift"},{name:"scheduletag"},{name:"transfershift"}]}};var K=async(t,e)=>{let r=await J(),i=z();return(await j(G("/myschedule/eventDispatcher"),JSON.stringify(i),{"x-xsrf-token":r})).map(l=>B(l,t,e))},W=async(t,e)=>{let a=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//hacksw/handcal//NONSGML v1.0//EN",`${(await K(t,e)).map(l=>l.iCal).join(`
-`)}`,"END:VCALENDAR"].join(`\r
-`);console.log(a),N(I("text/calendar",a),"schedule.vcs")},Q=async t=>{try{return(await b("#employeeProfileImage_"))[0]}catch{return null}};var tt=async()=>{let t=await Q();if(t==null||t.parentElement==null){console.error("Couldn't find the header");return}let e=document.createElement("button");e.setAttribute("value","Download vCal"),e.innerHTML="Download vCal",e.addEventListener("click",()=>W("Me","me@host.com")),t.parentElement.appendChild(e)};A("/wfd/home",tt);
+"use strict";
+
+// src/lib/SipHash.ts
+var SipHash = function() {
+  "use strict";
+  function r(r2, n2) {
+    var t2 = r2.l + n2.l, h2 = { h: r2.h + n2.h + (t2 / 2 >>> 31) >>> 0, l: t2 >>> 0 };
+    r2.h = h2.h, r2.l = h2.l;
+  }
+  function n(r2, n2) {
+    r2.h ^= n2.h, r2.h >>>= 0, r2.l ^= n2.l, r2.l >>>= 0;
+  }
+  function t(r2, n2) {
+    var t2 = { h: r2.h << n2 | r2.l >>> 32 - n2, l: r2.l << n2 | r2.h >>> 32 - n2 };
+    r2.h = t2.h, r2.l = t2.l;
+  }
+  function h(r2) {
+    var n2 = r2.l;
+    r2.l = r2.h, r2.h = n2;
+  }
+  function e(e2, l2, o2, u2) {
+    r(e2, l2), r(o2, u2), t(l2, 13), t(u2, 16), n(l2, e2), n(u2, o2), h(e2), r(o2, l2), r(e2, u2), t(l2, 17), t(u2, 21), n(l2, o2), n(u2, e2), h(o2);
+  }
+  function l(r2, n2) {
+    return r2[n2 + 3] << 24 | r2[n2 + 2] << 16 | r2[n2 + 1] << 8 | r2[n2];
+  }
+  function o(r2, t2) {
+    "string" == typeof t2 && (t2 = u(t2));
+    var h2 = { h: r2[1] >>> 0, l: r2[0] >>> 0 }, o2 = { h: r2[3] >>> 0, l: r2[2] >>> 0 }, i = { h: h2.h, l: h2.l }, a = h2, f = { h: o2.h, l: o2.l }, c = o2, s = t2.length, v = s - 7, g = new Uint8Array(new ArrayBuffer(8));
+    n(i, { h: 1936682341, l: 1886610805 }), n(f, { h: 1685025377, l: 1852075885 }), n(a, { h: 1819895653, l: 1852142177 }), n(c, { h: 1952801890, l: 2037671283 });
+    for (var y = 0; y < v; ) {
+      var d = { h: l(t2, y + 4), l: l(t2, y) };
+      n(c, d), e(i, f, a, c), e(i, f, a, c), n(i, d), y += 8;
+    }
+    g[7] = s;
+    for (var p = 0; y < s; )
+      g[p++] = t2[y++];
+    for (; p < 7; )
+      g[p++] = 0;
+    var w = { h: g[7] << 24 | g[6] << 16 | g[5] << 8 | g[4], l: g[3] << 24 | g[2] << 16 | g[1] << 8 | g[0] };
+    n(c, w), e(i, f, a, c), e(i, f, a, c), n(i, w), n(a, { h: 0, l: 255 }), e(i, f, a, c), e(i, f, a, c), e(i, f, a, c), e(i, f, a, c);
+    var _ = i;
+    return n(_, f), n(_, a), n(_, c), _;
+  }
+  function u(r2) {
+    if ("function" == typeof TextEncoder)
+      return new TextEncoder().encode(r2);
+    r2 = unescape(encodeURIComponent(r2));
+    for (var n2 = new Uint8Array(r2.length), t2 = 0, h2 = r2.length; t2 < h2; t2++)
+      n2[t2] = r2.charCodeAt(t2);
+    return n2;
+  }
+  return { hash: o, hash_hex: function(r2, n2) {
+    var t2 = o(r2, n2);
+    return ("0000000" + t2.h.toString(16)).substr(-8) + ("0000000" + t2.l.toString(16)).substr(-8);
+  }, hash_uint: function(r2, n2) {
+    var t2 = o(r2, n2);
+    return 4294967296 * (2097151 & t2.h) + t2.l;
+  }, string16_to_key: function(r2) {
+    var n2 = u(r2);
+    if (16 !== n2.length)
+      throw Error("Key length must be 16 bytes");
+    var t2 = new Uint32Array(4);
+    return t2[0] = l(n2, 0), t2[1] = l(n2, 4), t2[2] = l(n2, 8), t2[3] = l(n2, 12), t2;
+  }, string_to_u8: u };
+}();
+
+// src/lib/standard.ts
+var ready = (fn) => {
+  if (document.readyState !== "loading") {
+    fn();
+  } else {
+    document.addEventListener("DOMContentLoaded", fn);
+  }
+};
+window.ready = ready;
+var MAX_TRIES = 100;
+var retrySelector = async (query, cnt) => {
+  cnt = typeof cnt === "number" ? cnt : 1;
+  const elem = document.querySelectorAll(query);
+  if (elem && elem.length > 0) {
+    return elem;
+  } else if (cnt > MAX_TRIES) {
+    throw new Error(`Unable to find '${query}'; giving up.`);
+  }
+  console.debug(`#${cnt} selector miss on '${query}'`);
+  await sleep(100);
+  return retrySelector(query, cnt + 1);
+};
+var runForPath = async (path, func) => {
+  const rgx = new RegExp(path, "i");
+  if (rgx.test(document.location.pathname)) {
+    console.log(`Conditional path match for "${path}"`);
+    ready(() => {
+      console.log(`Executing for "${path}"`);
+      func();
+    });
+  }
+};
+var makeDataURI = (mimeType, data) => `data:${mimeType};charset=utf-8;base64,${btoa(data)}`;
+var downloadURI = (uri, name) => {
+  var link = document.createElement("a");
+  link.download = name;
+  link.href = uri;
+  link.click();
+};
+var hash = (m) => stringToUUID(SipHash.hash_hex("calendarFoo", m));
+var minutesDiff = (s, e) => ((typeof e === "string" ? new Date(e) : e).getTime() - (typeof s === "string" ? new Date(s) : s).getTime()) / 1e3 / 60;
+var hoursDiff = (s, e) => minutesDiff(s, e) / 60;
+var sleep = async (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+var dateAdd = (date2, days) => {
+  const d = new Date(date2);
+  d.setDate(date2.getDate() + days);
+  return d.toISOString().split("T")[0];
+};
+var iCalDate = (dt) => {
+  const d = new Date(dt);
+  const year = d.getFullYear();
+  const mon = `${d.getMonth() + 1 < 10 ? "0" : ""}${d.getMonth() + 1}`;
+  const dom = (d.getDate() < 10 ? "0" : "") + d.getDate();
+  const hr = (d.getHours() < 10 ? "0" : "") + d.getHours();
+  const min = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
+  const sec = (d.getSeconds() < 10 ? "0" : "") + d.getSeconds();
+  return `${year}${mon}${dom}T${hr}${min}${sec}`;
+};
+var time = (dt) => (typeof dt === "string" ? new Date(dt) : dt).toLocaleTimeString(
+  "en-US",
+  { hour12: true, hour: "numeric", minute: "2-digit", second: "2-digit" }
+).replace(/:\d{2}\s+/, " ");
+var date = (dt) => dt.toLocaleDateString(
+  "en-US",
+  { weekday: "short", month: "short", day: "numeric" }
+);
+var stringToUUID = (str) => {
+  str = str.replace("-", "");
+  return "xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx".replace(/[x]/g, (c, p) => str[p % str.length]);
+};
+var srt = (m) => m.toLowerCase().replace(/[a-z]/gi, (letter) => String.fromCharCode(letter.charCodeAt(0) + (letter.toLowerCase() <= "m" ? 13 : -13)));
+var makeRequest = async (method, uri, payload, headers, respType) => {
+  method = method.trim().toUpperCase();
+  payload = typeof payload === "undefined" || payload === null ? null : payload.toString();
+  headers = typeof headers === "undefined" ? {} : { ...headers };
+  respType = typeof respType === "string" && respType.toLowerCase() === "text" ? "text" : "json";
+  let body, contentType;
+  if (method != "get" && method != "head") {
+    body = { body: payload };
+    contentType = { "content-type": "application/json" };
+  }
+  const resp = await fetch(uri, {
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "accept-language": "en-US,en;q=0.9",
+      ...contentType,
+      "cache-control": "no-cache",
+      "device-type": "desktop",
+      "page": "home",
+      "pragma": "no-cache",
+      "sec-ch-ua": `"Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"`,
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": '"macOS"',
+      "sec-fetch-dest": "empty",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-site": "same-origin",
+      "sec-gpc": "1",
+      ...headers
+    },
+    "referrerPolicy": "strict-origin-when-cross-origin",
+    ...body,
+    "method": method,
+    "mode": "cors",
+    "credentials": "include"
+  });
+  if (!resp.ok) {
+    console.warn("Failed request:", uri, resp);
+    throw new Error(`Error performing ${method} for ${uri}`);
+  }
+  if (resp.status.toString().indexOf("2") !== 0) {
+    throw new Error(`Received ${resp.status} ${resp.statusText}. ${method.trim().toUpperCase()} ${uri}`);
+  }
+  return respType == "text" ? resp.text() : resp.json();
+};
+var postREST = (uri, payload, headers) => makeRequest("post", uri, payload, headers);
+console.log("your script debugging entry point here...");
+
+// src/mykronos.com.ts
+var KRO_HOSTNAME = srt(atob("ZXJwZXJuZ3ZiYW55cmRodmMtZmYzLmNlcS56bHhlYmFiZi5wYno="));
+var EMPLOYER = atob("UkVJ");
+var iCalWrapping = (s) => {
+  let c = 1;
+  const matches = s.match(/.{1,75}/g) ?? [];
+  return matches.map((p) => (
+    // Indent each block of text
+    `${p}\r
+ ${" ".repeat(c++)}`
+  )).join("").trim();
+};
+var iCalEvent = (e, name, email) => {
+  const start = new Date(e.orderedSegments[0].startDateTimeUTC);
+  const end = new Date(e.orderedSegments[e.orderedSegments.length - 1].endDateTimeUTC);
+  const breaks = e.orderedSegments.filter((s) => s.segmentType.symbolicId === "break_segment");
+  const breakTime = breaks.map((b) => minutesDiff(b.startDateTimeUTC, b.endDateTimeUTC)).reduce((p, c) => p + c, 0);
+  const breakTimes = breaks.map((b) => time(b.startDateTimeUTC)).join(", ");
+  const breakDisplay = breakTime > 0 ? `${breakTime} minutes break at ${breakTimes}` : "no breaks";
+  const elapsed = hoursDiff(start, end);
+  const dispElapsed = elapsed.toPrecision(3).replace(/0+$/, "0");
+  const paidElapsed = (elapsed - breakTime / 60).toPrecision(3).replace(/0+$/, "0");
+  const job = e.job;
+  const summary = `${EMPLOYER} from ${time(start)} to ${time(end)} (${dispElapsed} [${paidElapsed}] hours)`;
+  const description = `Shift in ${job} at ${EMPLOYER} from ${time(start)} to ${time(end)} on ${date(start)}. ${dispElapsed} hours with ${breakDisplay}`;
+  const TZ = "America/Chicago";
+  const tzid = `;TZID=${TZ}`;
+  const iCal = [
+    `BEGIN:VEVENT`,
+    `UID: ${hash(iCalDate(start) + iCalDate(end))}`,
+    `DTSTAMP${tzid}:${iCalDate(start)}`,
+    `ORGANIZER;CN=${name}:MAILTO:${email}`,
+    `DTSTART${tzid}:${iCalDate(start)}`,
+    `DTEND${tzid}:${iCalDate(end)}`,
+    `${iCalWrapping(`SUMMARY:${summary}`)}`,
+    `${iCalWrapping(`DESCRIPTION:${description}`)}`,
+    `END:VEVENT`
+  ].join("\r\n");
+  return {
+    ...e,
+    iCal
+  };
+};
+var apiUri = (path) => `https://${KRO_HOSTNAME}${path}`;
+var getXSRFToken = () => document.cookie.split(/;\s*/).map((s) => s.split(/=/)).filter((p) => p[0] == "XSRF-TOKEN").reduce((_, c) => c[1], "");
+var gengerateCalendarRequest = () => {
+  const now = /* @__PURE__ */ new Date();
+  const startDate = dateAdd(now, -14);
+  const endDate = dateAdd(now, 14);
+  return {
+    "startDate": startDate,
+    "endDate": endDate,
+    "types": [{
+      "name": "approvedtimeoffrequest"
+    }, {
+      "name": "holiday"
+    }, {
+      "name": "inprogresstimeoffrequest"
+    }, {
+      "name": "openshift"
+    }, {
+      "name": "paycodeedit"
+    }, {
+      "name": "regularshift"
+    }, {
+      "name": "scheduletag"
+    }, {
+      "name": "transfershift"
+    }]
+  };
+};
+var fetchCalendar = async (name, email) => {
+  const xsrfToken = await getXSRFToken();
+  const calendarRequest = gengerateCalendarRequest();
+  const body = await postREST(
+    apiUri("/myschedule/eventDispatcher"),
+    JSON.stringify(calendarRequest),
+    { "x-xsrf-token": xsrfToken }
+  );
+  return body.filter((e) => e && e.orderedSegments && Array.isArray(e.orderedSegments) && e.orderedSegments.length >= 1 && e.orderedSegments[0].startDateTimeUTC).map((e) => {
+    const ice = iCalEvent(e, name, email);
+    return ice;
+  });
+};
+var generateCalendar = async (name, email) => {
+  const cal = await fetchCalendar(name, email);
+  const iCalEvents = cal.map((c) => c.iCal).join("\n");
+  const iCalFull = [
+    `BEGIN:VCALENDAR`,
+    `VERSION:2.0`,
+    `PRODID:-//hacksw/handcal//NONSGML v1.0//EN`,
+    `${iCalEvents}`,
+    `END:VCALENDAR`
+  ].join("\r\n");
+  downloadURI(
+    makeDataURI("text/calendar", iCalFull),
+    "schedule.vcs"
+  );
+};
+var getEmpHead = async (c) => {
+  try {
+    const el = await retrySelector("#employeeProfileImage_");
+    return el[0];
+  } catch (err) {
+    return null;
+  }
+};
+var begin = async () => {
+  const header = await getEmpHead();
+  if (header == null || header.parentElement == null) {
+    console.error(`Couldn't find the header`);
+    return;
+  }
+  const button = document.createElement("button");
+  button.setAttribute("value", "Download vCal");
+  button.innerHTML = "Download vCal";
+  button.addEventListener("click", () => generateCalendar("Me", "me@host.com"));
+  header.parentElement.appendChild(button);
+};
+runForPath("/wfd/home", begin);

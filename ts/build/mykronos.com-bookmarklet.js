@@ -8,8 +8,7 @@
             const id = `script_${slug(script)}`;
             const existing = document.getElementById(id);
             if (existing) {
-                console.log(`already found #${id}`);
-                return;
+                return console && console.log(`already found #${id}`);
             }
             const scriptElem = document.createElement('script');
             scriptElem.type = 'text/javascript';

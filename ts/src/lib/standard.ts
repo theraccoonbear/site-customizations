@@ -54,7 +54,9 @@ export const downloadURI = (uri: string, name: string) => {
   
 export const hash = (m: any): string => stringToUUID(SipHash.hash_hex("calendarFoo", m))
 
-export const minutesDiff = (s: Date, e: Date): number => (e.getTime() - s.getTime()) / 1000 / 60;
+export const minutesDiff = (s: Date | string, e: Date | string): number => 
+  ((typeof e === 'string' ? new Date(e) : e).getTime() - 
+    (typeof s === 'string' ? new Date(s) : s).getTime()) / 1000 / 60;
 
 export const hoursDiff = (s: Date, e: Date): number => minutesDiff(s, e) / 60;
 
@@ -77,7 +79,7 @@ export const iCalDate = (dt: any): string => {
   return `${year}${mon}${dom}T${hr}${min}${sec}`;
 }
 
-export const time = (dt: Date): string => dt
+export const time = (dt: Date | string): string => (typeof dt === 'string' ? new Date(dt) : dt)
   .toLocaleTimeString('en-US', 
     { hour12: true, hour: 'numeric', minute: '2-digit', second: '2-digit' }
   )

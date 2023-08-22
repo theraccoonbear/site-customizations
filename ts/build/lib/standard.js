@@ -54,7 +54,8 @@ export const downloadURI = (uri, name) => {
     link.click();
 };
 export const hash = (m) => stringToUUID(SipHash.hash_hex("calendarFoo", m));
-export const minutesDiff = (s, e) => (e.getTime() - s.getTime()) / 1000 / 60;
+export const minutesDiff = (s, e) => ((typeof e === 'string' ? new Date(e) : e).getTime() -
+    (typeof s === 'string' ? new Date(s) : s).getTime()) / 1000 / 60;
 export const hoursDiff = (s, e) => minutesDiff(s, e) / 60;
 export const sleep = (ms) => __awaiter(void 0, void 0, void 0, function* () { return new Promise(resolve => setTimeout(resolve, ms)); });
 export const dateAdd = (date, days) => {
@@ -72,7 +73,7 @@ export const iCalDate = (dt) => {
     const sec = (d.getSeconds() < 10 ? '0' : '') + d.getSeconds();
     return `${year}${mon}${dom}T${hr}${min}${sec}`;
 };
-export const time = (dt) => dt
+export const time = (dt) => (typeof dt === 'string' ? new Date(dt) : dt)
     .toLocaleTimeString('en-US', { hour12: true, hour: 'numeric', minute: '2-digit', second: '2-digit' })
     .replace(/:\d{2}\s+/, ' ');
 export const date = (dt) => dt

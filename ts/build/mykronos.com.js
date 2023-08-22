@@ -17,12 +17,10 @@ const EMPLOYER = atob('Uk' + 'VJ');
 const iCalWrapping = (s) => {
     var _a;
     let c = 1;
-    console.log(s, s.match(/.{1,75}/));
-    return ((_a = s.match(/.{1,75}/g)) !== null && _a !== void 0 ? _a : [])
-        .map((p) => {
-        console.log('p', p);
-        return `${p}\r\n ` + " ".repeat(c++);
-    })
+    const matches = (_a = s.match(/.{1,75}/g)) !== null && _a !== void 0 ? _a : [];
+    return matches
+        .map((p) => // Indent each block of text
+     `${p}\r\n ${" ".repeat(c++)}`)
         .join('')
         .trim();
 };
@@ -31,10 +29,9 @@ const iCalEvent = (e, name, email) => {
     const end = new Date(e.orderedSegments[e.orderedSegments.length - 1].endDateTimeUTC);
     const breaks = e.orderedSegments.filter((s) => s.segmentType.symbolicId === 'break_segment');
     const breakTime = breaks
-        .map((b) => std.minutesDiff(new Date(b.startDateTimeUTC), new Date(b.endDateTimeUTC)))
+        .map((b) => std.minutesDiff(b.startDateTimeUTC, b.endDateTimeUTC))
         .reduce((p, c) => p + c, 0);
-    const breakTimes = breaks
-        .map((b) => std.time(new Date(b.startDateTimeUTC)))
+    const breakTimes = breaks.map((b) => std.time(b.startDateTimeUTC))
         .join(', ');
     const breakDisplay = breakTime > 0 ? `${breakTime} minutes break at ${breakTimes}` : 'no breaks';
     const elapsed = std.hoursDiff(start, end);
@@ -107,7 +104,13 @@ const fetchCalendar = (name, email) => __awaiter(void 0, void 0, void 0, functio
     const xsrfToken = yield getXSRFToken();
     const calendarRequest = gengerateCalendarRequest();
     const body = yield std.postREST(apiUri('/myschedule/eventDispatcher'), JSON.stringify(calendarRequest), { "x-xsrf-token": xsrfToken });
-    return body.map((e) => {
+    return body
+        .filter((e) => e &&
+        e.orderedSegments &&
+        Array.isArray(e.orderedSegments) &&
+        e.orderedSegments.length >= 1 &&
+        e.orderedSegments[0].startDateTimeUTC)
+        .map((e) => {
         // console.log(e);
         const ice = iCalEvent(e, name, email);
         return ice;
@@ -126,7 +129,7 @@ const generateCalendar = (name, email) => __awaiter(void 0, void 0, void 0, func
         `END:VCALENDAR`
     ].join("\r\n");
     // console.log("\n\n");
-    console.log(iCalFull);
+    // console.log(iCalFull);
     std.downloadURI(std.makeDataURI("text/calendar", iCalFull), "schedule.vcs");
 });
 const getEmpHead = (c) => __awaiter(void 0, void 0, void 0, function* () {

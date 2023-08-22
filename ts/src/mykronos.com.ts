@@ -11,14 +11,12 @@ const EMPLOYER = atob('Uk' + 'VJ');
 
 const iCalWrapping = (s: string): string => {
   let c = 1;
-  console.log(s, s.match(/.{1,75}/));
-  return (s.match(/.{1,75}/g) ?? [])
-  .map((p: string) => {
-    console.log('p', p);
-    return `${p}\r\n ` + " ".repeat(c++);
-  })
-  .join('')
-  .trim();
+  const matches = s.match(/.{1,75}/g) ?? [];
+  return matches
+    .map((p: string) => // Indent each block of text
+      `${p}\r\n ${" ".repeat(c++)}`)
+    .join('')
+    .trim();
 }
 const iCalEvent = (e: any, name: string, email: string) => {
   const start = new Date(e.orderedSegments[0].startDateTimeUTC);
@@ -28,11 +26,13 @@ const iCalEvent = (e: any, name: string, email: string) => {
     s.segmentType.symbolicId === 'break_segment');
 
   const breakTime = breaks
-    .map((b: any) => std.minutesDiff(new Date(b.startDateTimeUTC), new Date(b.endDateTimeUTC)))
-    .reduce((p: number, c: number) => p + c, 0);
+    .map((b: any) => 
+      std.minutesDiff(b.startDateTimeUTC, b.endDateTimeUTC))
+    .reduce((p: number, c: number) => 
+      p + c, 0);
 
-  const breakTimes = breaks
-    .map((b: any) => std.time(new Date(b.startDateTimeUTC)))
+  const breakTimes = breaks.map((b: any) => 
+    std.time(b.startDateTimeUTC))
     .join(', ');
 
   const breakDisplay = breakTime > 0 ? `${breakTime} minutes break at ${breakTimes}`: 'no breaks';
@@ -125,11 +125,18 @@ const fetchCalendar = async (name: string, email: string) => {
     { "x-xsrf-token": xsrfToken },
   );
 
-  return body.map((e: any) => {
-    // console.log(e);
-    const ice = iCalEvent(e, name, email);
-    return ice;
-  });
+  return body
+    .filter((e: any) => 
+      e && 
+      e.orderedSegments &&
+      Array.isArray(e.orderedSegments) &&
+      e.orderedSegments.length >= 1 &&
+      e.orderedSegments[0].startDateTimeUTC)
+    .map((e: any) => {
+      // console.log(e);
+      const ice = iCalEvent(e, name, email);
+      return ice;
+    });
 };
 
 const generateCalendar = async (name: string, email: string) => {
@@ -146,7 +153,7 @@ const generateCalendar = async (name: string, email: string) => {
   ].join("\r\n");
 
   // console.log("\n\n");
-  console.log(iCalFull);
+  // console.log(iCalFull);
 
   std.downloadURI(
     std.makeDataURI("text/calendar", iCalFull),
