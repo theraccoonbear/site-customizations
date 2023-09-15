@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteREST = exports.patchREST = exports.putREST = exports.postREST = exports.getREST = exports.headREST = exports.makeRequest = exports.srt = exports.fwc = exports.fwcc = exports.fwcr = exports.fwcl = exports.stringToUUID = exports.date = exports.time = exports.iCalDate = exports.getDateRange = exports.dateAdd = exports.dateFmt = exports.sDate = exports.simpleDate = exports.addDays = exports.sleep = exports.hoursDiff = exports.minutesDiff = exports.hash = exports.downloadURI = exports.makeDataURI = exports.runForPath = exports.decodeHtml = exports.retrySelector = exports.ready = void 0;
+exports.deleteREST = exports.patchREST = exports.putREST = exports.postREST = exports.getREST = exports.headREST = exports.makeRequest = exports.srt = exports.stringToUUID = exports.date = exports.time = exports.iCalDate = exports.dateAdd = exports.sleep = exports.hoursDiff = exports.minutesDiff = exports.hash = exports.downloadURI = exports.makeDataURI = exports.runForPath = exports.decodeHtml = exports.retrySelector = exports.ready = void 0;
 const SipHash_js_1 = require("./SipHash.js");
 const ready = (fn) => {
     if (document.readyState !== 'loading') {
@@ -53,7 +53,7 @@ const runForPath = (path, func) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.runForPath = runForPath;
-const makeDataURI = (mimeType, data) => `data:${mimeType};charset=utf-8;base64,${btoa(unescape(encodeURIComponent(data)))}`;
+const makeDataURI = (mimeType, data) => `data:${mimeType};charset=utf-8;base64,${btoa(data)}`;
 exports.makeDataURI = makeDataURI;
 const downloadURI = (uri, name) => {
     var link = document.createElement("a");
@@ -71,33 +71,12 @@ const hoursDiff = (s, e) => (0, exports.minutesDiff)(s, e) / 60;
 exports.hoursDiff = hoursDiff;
 const sleep = (ms) => __awaiter(void 0, void 0, void 0, function* () { return new Promise(resolve => setTimeout(resolve, ms)); });
 exports.sleep = sleep;
-const addDays = (date, days) => {
+const dateAdd = (date, days) => {
     const d = new Date(date);
-    d.setDate(new Date(date).getDate() + days);
-    return d;
+    d.setDate(date.getDate() + days);
+    return d.toISOString().split('T')[0];
 };
-exports.addDays = addDays;
-const simpleDate = (d) => d.toISOString().split('T')[0];
-exports.simpleDate = simpleDate;
-const sDate = (d) => (0, exports.simpleDate)(d)
-    .split(/-/)
-    .filter((_, i) => i > 0)
-    .join('-');
-exports.sDate = sDate;
-const dateFmt = (d, format = '') => {
-    const year = d.getFullYear();
-    const mon = `${(d.getMonth() + 1 < 10 ? '0' : '')}${d.getMonth() + 1}`;
-    const dom = (d.getDate() < 10 ? '0' : '') + d.getDate();
-    return `${mon}/${dom}/${year}`;
-};
-exports.dateFmt = dateFmt;
-const dateAdd = (date, days) => (0, exports.simpleDate)((0, exports.addDays)(date, days));
 exports.dateAdd = dateAdd;
-const getDateRange = (range, now = new Date()) => [
-    (0, exports.addDays)(now, -Math.abs(range || 14)),
-    (0, exports.addDays)(now, Math.abs(range || 14))
-];
-exports.getDateRange = getDateRange;
 const iCalDate = (dt) => {
     const d = new Date(dt);
     const year = d.getFullYear();
@@ -111,35 +90,16 @@ const iCalDate = (dt) => {
 exports.iCalDate = iCalDate;
 const time = (dt) => (typeof dt === 'string' ? new Date(dt) : dt)
     .toLocaleTimeString('en-US', { hour12: true, hour: 'numeric', minute: '2-digit', second: '2-digit' })
-    .replace(/:\d{2}\s+/, ' ')
-    .toLowerCase();
+    .replace(/:\d{2}\s+/, ' ');
 exports.time = time;
 const date = (dt) => dt
     .toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 exports.date = date;
 const stringToUUID = (str) => {
     str = str.replace('-', '');
-    return 'xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx'.replace(/[x]/g, (_, p) => str[p % str.length]);
+    return 'xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx'.replace(/[x]/g, (c, p) => str[p % str.length]);
 };
 exports.stringToUUID = stringToUUID;
-const fwcl = (text, width) => (0, exports.fwc)(text, width, 'L', true);
-exports.fwcl = fwcl;
-const fwcr = (text, width) => (0, exports.fwc)(text, width, 'R', true);
-exports.fwcr = fwcr;
-const fwcc = (text, width) => (0, exports.fwc)(text, width, 'C', true);
-exports.fwcc = fwcc;
-const fwc = (text, width, alignment = 'L', truncate = true) => text.length > width ?
-    (truncate ? text.slice(0, width) : text) :
-    (alignment === 'L' ?
-        (text + ' '.repeat(width - text.length))
-        :
-            (alignment === 'R' ?
-                (' '.repeat(width - text.length) + text)
-                :
-                    (' '.repeat(Math.floor((width - text.length) / 2)) +
-                        text +
-                        ' '.repeat(Math.ceil((width - text.length) / 2)))));
-exports.fwc = fwc;
 const srt = (m) => m.toLowerCase()
     .replace(/[a-z]/gi, letter => String.fromCharCode(letter.charCodeAt(0) + (letter.toLowerCase() <= 'm' ? 13 : -13)));
 exports.srt = srt;

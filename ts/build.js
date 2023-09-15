@@ -2,7 +2,7 @@ const { build } = require("esbuild");
 const { dependencies, peerDependencies } = require('./package.json');
 
 const sharedConfig = {
-  entryPoints: ["src/mykronos.com.ts", "src/mykronos.com-bookmarklet.ts"],
+  // entryPoints: ["src/mykronos.com.ts", "src/mykronos.com-bookmarklet.ts"],
   bundle: true,
   minify: false,
   format: "",
@@ -15,5 +15,15 @@ build({
   platform: 'browser',
   format: 'cjs',
   outdir: "dist",
-  // outfile: "dist/mykronos.com.js",
+  entryPoints: ['src/mykronos.com.ts', 'src/sharepoint.com.ts']
 });
+
+build({
+  ...sharedConfig,
+  platform: 'browser',
+  format: 'cjs',
+  outdir: "dist",
+  minify: true,
+  entryPoints: ['src/mykronos.com-bookmarklet.ts']
+});
+

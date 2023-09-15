@@ -7,7 +7,12 @@
   "scripts": {
     "build": "npx tsc",
     "build:watch": "npx tsc -w",
-    "build:full": "npx tsc && node build.js && cp dist/mykronos.com.js ../mykronos.com.js",
-    "build:fuller": "npx tsc && node build.js && npx dts-bundle-generator -o dist/mykronos.com.d.ts src/mykronos.com.ts && cp dist/mykronos.com.js ../mykronos.com.js"
+    "build:full": "npx tsc && node build.js && cp dist/*.com.js ..",
+    "build:fuller": "npx tsc && node build.js && npx dts-bundle-generator -o dist/mykronos.com.d.ts src/mykronos.com.ts && cp dist/mykronos.com.js ../mykronos.com.js",
+    "build:full:watch": "npm run build:watch & watch -n 1 npm run build:full && echo 'done'",
+    "bfw": "npm run build:full:watch"
+  },
+  "dependencies": {
+    "date-fns": "^2.30.0"
   }
 }

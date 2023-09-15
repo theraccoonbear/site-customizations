@@ -43,7 +43,7 @@ export const runForPath = async (path: string, func: Function) => {
 };
   
 export const makeDataURI = (mimeType: string, data: string) => 
-  `data:${mimeType};charset=utf-8;base64,${btoa(data)}`;
+  `data:${mimeType};charset=utf-8;base64,${btoa(unescape(encodeURIComponent(data)))}`;
   
 export const downloadURI = (uri: string, name: string) => {
   var link = document.createElement("a");
@@ -62,11 +62,32 @@ export const hoursDiff = (s: Date, e: Date): number => minutesDiff(s, e) / 60;
 
 export const sleep = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export const dateAdd = (date: any, days: number): string => {
+export const addDays = (date: any, days: number): Date => {
   const d = new Date(date);
-  d.setDate(date.getDate() + days);
-  return d.toISOString().split('T')[0];
-};
+  d.setDate(new Date(date).getDate() + days);
+  return d;
+}
+
+export const simpleDate = (d: Date): string => d.toISOString().split('T')[0];
+export const sDate = (d: Date): string => simpleDate(d)
+  .split(/-/)
+  .filter((_, i) => i > 0)
+  .join('-');
+
+export const dateFmt = (d: Date, format: string = ''): string => {
+  const year = d.getFullYear();
+  const mon = `${(d.getMonth() + 1 < 10 ? '0' : '')}${d.getMonth() + 1}`;
+  const dom = (d.getDate() < 10 ? '0' : '') + d.getDate();
+  return `${mon}/${dom}/${year}`;
+}
+
+export const dateAdd = (date: any, days: number): string => simpleDate(addDays(date, days));
+
+export const getDateRange = (range?: number, now: Date = new Date()): Date[] => 
+  [
+    addDays(now, -Math.abs(range || 14)),
+    addDays(now, Math.abs(range || 14))
+  ];
 
 export const iCalDate = (dt: any): string => {
   const d = new Date(dt);
@@ -83,7 +104,8 @@ export const time = (dt: Date | string): string => (typeof dt === 'string' ? new
   .toLocaleTimeString('en-US', 
     { hour12: true, hour: 'numeric', minute: '2-digit', second: '2-digit' }
   )
-  .replace(/:\d{2}\s+/, ' ');
+  .replace(/:\d{2}\s+/, ' ')
+  .toLowerCase();
 
 export const date = (dt: Date): string => dt
   .toLocaleDateString('en-US',
@@ -93,8 +115,30 @@ export const date = (dt: Date): string => dt
 
 export const stringToUUID = (str: string): string => {
   str = str.replace('-', '');
-  return 'xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx'.replace(/[x]/g, (c, p) => str[p % str.length]);
+  return 'xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx'.replace(/[x]/g, (_, p) => str[p % str.length]);
 };
+
+export const fwcl = (text: string, width: number): string => fwc(text, width, 'L', true);
+export const fwcr = (text: string, width: number): string => fwc(text, width, 'R', true);
+export const fwcc = (text: string, width: number): string => fwc(text, width, 'C', true);
+
+export const fwc = (text: string, width: number, alignment: 'L' | 'R' | 'C' = 'L', truncate: boolean = true): string => 
+  text.length > width ? 
+    (truncate ? text.slice(0, width) : text) : 
+    (
+      alignment === 'L' ? 
+        (text + ' '.repeat(width - text.length))
+      : 
+      (alignment === 'R' ? 
+        (' '.repeat(width - text.length) + text) 
+      : 
+        (
+          ' '.repeat(Math.floor((width - text.length) / 2)) + 
+          text +
+          ' '.repeat(Math.ceil((width - text.length) / 2))
+        )
+      )
+    );
 
 export const srt = (m: string ) => m.toLowerCase()
   .replace(/[a-z]/gi, letter => 

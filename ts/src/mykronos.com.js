@@ -32,27 +32,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// @include standard.js
 const std = __importStar(require("./lib/standard"));
 const debugging = false;
-const JOB_FUNCTION = {
-    "Footwear": "👞",
-    "Stocking": "🛒",
-    "Customer Service": "💳",
-    "Camp": "🏕️",
-    "Hardgoods": "🦾",
-    "Action Sports": "🛶",
-    "Shipping": "📦",
-    "New Hire Onboarding": "🧑‍🎓",
-    "Operations-TRN": "🧑‍🎓",
-    "Clothing": "👕",
-    "Softgoods": "🧣",
-    "Shop": "🔧",
-    "Shop Management": "🧑‍🔧",
-    "Order Fulfillment": "📦",
-    "Visual": "🧑‍🎨",
-    "Banker": "🏦",
-    "Management": "📋",
-};
 const dbg = (...stuff) => debugging ? console.log(...stuff) : null;
 const MAX_TRIES = 100;
 const KRO_HOSTNAME = std.srt(atob('ZXJwZXJuZ3ZiYW55cmRodmM' + 'tZmYzLmNlcS56bHhlYmFiZi5wY' + 'no='));
@@ -67,57 +49,31 @@ const iCalWrapping = (s) => {
         .join('')
         .trim();
 };
-const prepEvent = (ev) => {
-    const e = Object.assign({}, ev);
-    e.startTime = new Date(e.orderedSegments[0].startDateTimeUTC);
-    e.endTime = new Date(e.orderedSegments[e.orderedSegments.length - 1].endDateTimeUTC);
-    e.timeByJob = {};
-    let max = 0;
-    e.primaryShiftJob = '?';
-    e.work = e.orderedSegments
-        .filter((s) => s.segmentType.symbolicId !== 'break_segment')
-        .map((s) => {
-        const idParts = s.orgNode.path.split(/\//g);
-        e.id = idParts.pop() || 'foo';
-        if (typeof e.timeByJob[e.id] === 'undefined') {
-            e.timeByJob[e.id] = 0;
-        }
-        e.timeByJob[e.id] += std.minutesDiff(s.startDateTimeUTC, s.endDateTimeUTC);
-        if (e.timeByJob[e.id] >= max) {
-            max = e.timeByJob[e.id];
-            e.primaryShiftJob = e.id;
-        }
-        return e;
-    });
-    e.breaks = e.orderedSegments.filter((s) => s.segmentType.symbolicId === 'break_segment');
-    e.breakTime = e.breaks
+const iCalEvent = (e, name, email) => {
+    const start = new Date(e.orderedSegments[0].startDateTimeUTC);
+    const end = new Date(e.orderedSegments[e.orderedSegments.length - 1].endDateTimeUTC);
+    const breaks = e.orderedSegments.filter((s) => s.segmentType.symbolicId === 'break_segment');
+    const breakTime = breaks
         .map((b) => std.minutesDiff(b.startDateTimeUTC, b.endDateTimeUTC))
         .reduce((p, c) => p + c, 0);
-    e.breakTimes = e.breaks.map((b) => std.time(b.startDateTimeUTC))
+    const breakTimes = breaks.map((b) => std.time(b.startDateTimeUTC))
         .join(', ');
-    e.breakDisplay = e.breakTime > 0 ? `${e.breakTime} minutes break at ${e.breakTimes}` : 'no breaks';
-    e.elapsed = std.hoursDiff(e.startTime, e.endTime);
-    e.dispElapsed = e.elapsed.toPrecision(3).replace(/0+$/, '0');
-    e.paidElapsed = (e.elapsed - (e.breakTime / 60)).toPrecision(3).replace(/0+$/, '0');
-    return e;
-};
-const summaryLine = (e) => `${EMPLOYER} ${jobLine(e.primaryShiftJob)} from ${std.time(e.startTime)} to ${std.time(e.endTime)} (${e.dispElapsed} ` +
-    `[${e.paidElapsed}] hours)`;
-const descriptionLine = (e) => `Shift in ${jobLine(e.primaryShiftJob)} at ${EMPLOYER} from ${std.time(e.startTime)} to ${std.time(e.endTime)} on ` +
-    `${std.date(e.startTime)}. ${e.dispElapsed} hours with ${e.breakDisplay}`;
-const iCalEvent = (ev, name, email) => {
-    const e = prepEvent(ev);
-    const summary = summaryLine(e);
-    const description = descriptionLine(e);
+    const breakDisplay = breakTime > 0 ? `${breakTime} minutes break at ${breakTimes}` : 'no breaks';
+    const elapsed = std.hoursDiff(start, end);
+    const dispElapsed = elapsed.toPrecision(3).replace(/0+$/, '0');
+    const paidElapsed = (elapsed - (breakTime / 60)).toPrecision(3).replace(/0+$/, '0');
+    const job = e.job;
+    const summary = `${EMPLOYER} from ${std.time(start)} to ${std.time(end)} (${dispElapsed} [${paidElapsed}] hours)`;
+    const description = `Shift in ${job} at ${EMPLOYER} from ${std.time(start)} to ${std.time(end)} on ${std.date(start)}. ${dispElapsed} hours with ${breakDisplay}`;
     const TZ = 'America/Chicago';
     const tzid = `;TZID=${TZ}`;
     const iCal = [
         `BEGIN:VEVENT`,
-        `UID: ${std.hash(std.iCalDate(e.startTime) + std.iCalDate(e.endTime))}`,
-        `DTSTAMP${tzid}:${std.iCalDate(e.startTime)}`,
+        `UID: ${std.hash(std.iCalDate(start) + std.iCalDate(end))}`,
+        `DTSTAMP${tzid}:${std.iCalDate(start)}`,
         `ORGANIZER;CN=${name}:MAILTO:${email}`,
-        `DTSTART${tzid}:${std.iCalDate(e.startTime)}`,
-        `DTEND${tzid}:${std.iCalDate(e.endTime)}`,
+        `DTSTART${tzid}:${std.iCalDate(start)}`,
+        `DTEND${tzid}:${std.iCalDate(end)}`,
         `${iCalWrapping(`SUMMARY:${summary}`)}`,
         `${iCalWrapping(`DESCRIPTION:${description}`)}`,
         `END:VEVENT`
@@ -125,16 +81,25 @@ const iCalEvent = (ev, name, email) => {
     return Object.assign(Object.assign({}, e), { iCal });
 };
 const apiUri = (path) => `https://${KRO_HOSTNAME}${path}`;
+const getEmployee = () => __awaiter(void 0, void 0, void 0, function* () {
+    const resp = yield fetch(apiUri('/get/userFeatures'));
+    if (!resp.ok) {
+        throw new Error("Employee lookup error!");
+    }
+    if (resp.status.toString().indexOf('2') !== 0) {
+        throw new Error(`Employee lookup failed: ${resp.status} ${resp.statusText}`);
+    }
+    return resp.json();
+});
 const getXSRFToken = () => document.cookie
     .split(/;\s*/)
     .map(s => s.split(/=/))
     .filter(p => p[0] == 'XSRF-TOKEN')
     .reduce((_, c) => c[1], "");
-const jobLine = (job) => `${job}${typeof JOB_FUNCTION[job] !== 'undefined' ? ` ${JOB_FUNCTION[job]}` : ''}`;
 const gengerateCalendarRequest = () => {
-    const range = std.getDateRange();
-    const startDate = std.simpleDate(range[0]);
-    const endDate = std.simpleDate(range[1]);
+    const now = new Date();
+    const startDate = std.dateAdd(now, -14);
+    const endDate = std.dateAdd(now, 14);
     return {
         "startDate": startDate,
         "endDate": endDate,
@@ -158,50 +123,29 @@ const gengerateCalendarRequest = () => {
     };
 };
 const getUserInfo = () => __awaiter(void 0, void 0, void 0, function* () { return std.getREST(apiUri('/get/UserInfo')); });
-const calendarEventFilter = (e) => {
-    const retVal = e &&
-        e.orderedSegments &&
-        Array.isArray(e.orderedSegments) &&
-        e.orderedSegments.length >= 1 &&
-        e.orderedSegments[0].startDateTimeUTC;
-    return retVal;
-};
-const fetchCalendar = (name = '', email = '') => __awaiter(void 0, void 0, void 0, function* () {
+const fetchCalendar = (name, email) => __awaiter(void 0, void 0, void 0, function* () {
+    // const user = await getUserInfo();
+    // console.log('USER:', user);
     const xsrfToken = yield getXSRFToken();
     const calendarRequest = gengerateCalendarRequest();
     const body = yield std.postREST(apiUri('/myschedule/eventDispatcher'), JSON.stringify(calendarRequest), { "x-xsrf-token": xsrfToken });
     return body
-        .filter(calendarEventFilter)
-        .map((e) => iCalEvent(e, name, email));
+        .filter((e) => e &&
+        e.orderedSegments &&
+        Array.isArray(e.orderedSegments) &&
+        e.orderedSegments.length >= 1 &&
+        e.orderedSegments[0].startDateTimeUTC)
+        .map((e) => {
+        // console.log(e);
+        const ice = iCalEvent(e, name, email);
+        return ice;
+    });
 });
-const simpleEntry = (ev) => prepEvent(ev) &&
-    [` *`,
-        std.date(ev.startTime),
-        std.time(ev.startTime),
-        'to',
-        std.time(ev.endTime),
-        'in',
-        jobLine(ev.primaryShiftJob)
-    ].join(' ');
-const generateSimpleCalendar = () => __awaiter(void 0, void 0, void 0, function* () {
-    const cal = yield fetchCalendar();
-    const now = new Date();
-    const text = cal
-        .map(prepEvent)
-        .filter((e) => e.startTime >= now)
-        .map(simpleEntry)
-        .join("\n");
-    console.log(text);
-    const data = std.makeDataURI("text/plain", text);
-    const range = std.getDateRange();
-    const filename = `schedule.txt`;
-    std.downloadURI(data, filename);
-});
-const generateCalendar = (name, email, extension) => __awaiter(void 0, void 0, void 0, function* () {
+const generateCalendar = (name, email, filename) => __awaiter(void 0, void 0, void 0, function* () {
     const cal = yield fetchCalendar(name, email);
+    // console.log("Calendar:", cal);
     const iCalEvents = cal
-        .map((c) => c.iCal)
-        .join("\n");
+        .map((c) => c.iCal).join("\n");
     const iCalFull = [
         `BEGIN:VCALENDAR`,
         `VERSION:2.0`,
@@ -210,7 +154,6 @@ const generateCalendar = (name, email, extension) => __awaiter(void 0, void 0, v
         `END:VCALENDAR`
     ].join("\r\n");
     const data = std.makeDataURI("text/calendar", iCalFull);
-    const filename = `schedule.${extension}`;
     std.downloadURI(data, filename);
 });
 const getEmpHead = (c) => __awaiter(void 0, void 0, void 0, function* () {
@@ -257,11 +200,10 @@ const begin = () => __awaiter(void 0, void 0, void 0, function* () {
         console.error(`Couldn't find the header`);
         return;
     }
-    const butVCal = mkButton('vCal (Google)', () => generateCalendar('Me', 'me@host.com', 'vcs'));
-    const butICal = mkButton('iCal (Outlook)', () => generateCalendar('Me', 'me@host.com', 'ics'));
-    const butTxtCal = mkButton('Text', () => generateSimpleCalendar());
+    const butVCal = mkButton('vCal (Google)', () => generateCalendar('Me', 'me@host.com', 'schedule.vcs'));
+    const butICal = mkButton('iCal (Outlook)', () => generateCalendar('Me', 'me@host.com', 'schedule.ics'));
     header.parentElement.appendChild(butVCal);
     header.parentElement.appendChild(butICal);
-    header.parentElement.appendChild(butTxtCal);
+    debugger;
 });
 std.runForPath('/wfd/home', begin);
