@@ -211,7 +211,7 @@ const generateCalendar = (name, email, extension) => __awaiter(void 0, void 0, v
     ].join("\r\n");
     const data = std.makeDataURI("text/calendar", iCalFull);
     const filename = `schedule.${extension}`;
-    std.downloadURI(data, filename);
+    // std.downloadURI(data, filename);
 });
 const getEmpHead = (c) => __awaiter(void 0, void 0, void 0, function* () {
     try {

@@ -36,7 +36,7 @@ const iCalWrapping = (s: string): string => {
       `${p}\r\n ${" ".repeat(c++)}`)
     .join('')
     .trim();
-}
+};
 
 const prepEvent= (ev: any): any => {
   const e = { ...ev };

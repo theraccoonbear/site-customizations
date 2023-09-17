@@ -378,7 +378,6 @@ var generateCalendar = async (name, email, extension) => {
   ].join("\r\n");
   const data = makeDataURI("text/calendar", iCalFull);
   const filename = `schedule.${extension}`;
-  downloadURI(data, filename);
 };
 var getEmpHead = async (c) => {
   try {

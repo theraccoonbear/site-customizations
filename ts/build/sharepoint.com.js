@@ -93,5 +93,5 @@ std.runForPath('Prodeal.aspx', () => __awaiter(void 0, void 0, void 0, function*
     };
     console.log('everything:', total);
     const data = JSON.stringify(total, null, 2).replace(/[\u00A0-\u2666]/g, (c) => `&#${c.charCodeAt(0)};`);
-    std.downloadURI(std.makeDataURI('text/json', data), 'prodeals.json');
+    // std.downloadURI(std.makeDataURI('text/json', data), 'prodeals.json');
 }));

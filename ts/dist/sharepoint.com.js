@@ -117,13 +117,6 @@ var runForPath = async (path, func) => {
     });
   }
 };
-var makeDataURI = (mimeType, data) => `data:${mimeType};charset=utf-8;base64,${btoa(unescape(encodeURIComponent(data)))}`;
-var downloadURI = (uri, name) => {
-  var link = document.createElement("a");
-  link.download = name;
-  link.href = uri;
-  link.click();
-};
 var dateFmt = (d, format = "") => {
   const year = d.getFullYear();
   const mon = `${d.getMonth() + 1 < 10 ? "0" : ""}${d.getMonth() + 1}`;
@@ -191,5 +184,4 @@ runForPath("Prodeal.aspx", async () => {
   };
   console.log("everything:", total);
   const data = JSON.stringify(total, null, 2).replace(/[\u00A0-\u2666]/g, (c) => `&#${c.charCodeAt(0)};`);
-  downloadURI(makeDataURI("text/json", data), "prodeals.json");
 });
