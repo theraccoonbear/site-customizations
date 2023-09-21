@@ -16,8 +16,8 @@
       scriptElem.id = id;
       scriptElem.src = `${host}${script}`;
       scriptElem.onload = () => {
-        const nf = new Function(`generateCalendar('Me', 'me@host.com')`);
-        nf();
+        // const nf = new Function(`generateCalendar('Me', 'me@host.com')`);
+        // nf();
       };
       document.body.appendChild(scriptElem);
     });
