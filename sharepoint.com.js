@@ -117,6 +117,14 @@ var runForPath = async (path, func) => {
     });
   }
 };
+var mkButton = (label, action, classes = []) => {
+  const button = document.createElement("button");
+  button.setAttribute("value", label);
+  button.innerHTML = label;
+  button.addEventListener("click", action);
+  button.classList.add(...classes);
+  return button;
+};
 var makeDataURI = (mimeType, data) => `data:${mimeType};charset=utf-8;base64,${btoa(unescape(encodeURIComponent(data)))}`;
 var downloadURI = (uri, name) => {
   var link = document.createElement("a");
@@ -167,17 +175,9 @@ var getPrograms = async () => {
   const programs = payload.d.results;
   return programs;
 };
-var findProgram = (programs, title) => {
-  const rgxFindProgram = new RegExp(title, "i");
-  return [...programs.filter((p) => rgxFindProgram.test(p.Title)), null][0];
-};
-runForPath("Prodeal.aspx", async () => {
+var doIt = async () => {
   const programs = await getPrograms();
   console.log("programs:", programs);
-  const fjallraven = findProgram(programs, "Fjallraven Special");
-  const adidas = findProgram(programs, "Adidas Over");
-  console.log("Fjallraven:", fjallraven);
-  console.log("Adidas:", adidas);
   const byWhoCanUse = {};
   programs.forEach((p) => {
     const type = p.ProgramFor.results[0];
@@ -192,4 +192,9 @@ runForPath("Prodeal.aspx", async () => {
   console.log("everything:", total);
   const data = JSON.stringify(total, null, 2).replace(/[\u00A0-\u2666]/g, (c) => `&#${c.charCodeAt(0)};`);
   downloadURI(makeDataURI("text/json", data), "prodeals.json");
+};
+runForPath("Prodeal.aspx", async () => {
+  const header = document.querySelector("h1#pageTitle");
+  const button = mkButton("Download Programs", doIt);
+  header?.parentElement?.appendChild(button);
 });

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteREST = exports.patchREST = exports.putREST = exports.postREST = exports.getREST = exports.headREST = exports.makeRequest = exports.srt = exports.fwc = exports.fwcc = exports.fwcr = exports.fwcl = exports.stringToUUID = exports.date = exports.time = exports.iCalDate = exports.getDateRange = exports.dateAdd = exports.dateFmt = exports.sDate = exports.simpleDate = exports.addDays = exports.sleep = exports.hoursDiff = exports.minutesDiff = exports.hash = exports.downloadURI = exports.makeDataURI = exports.runForPath = exports.decodeHtml = exports.retrySelector = exports.ready = void 0;
+exports.deleteREST = exports.patchREST = exports.putREST = exports.postREST = exports.getREST = exports.headREST = exports.makeRequest = exports.srt = exports.fwc = exports.fwcc = exports.fwcr = exports.fwcl = exports.stringToUUID = exports.date = exports.time = exports.iCalDate = exports.getDateRange = exports.dateAdd = exports.dateFmt = exports.sDate = exports.simpleDate = exports.addDays = exports.sleep = exports.hoursDiff = exports.minutesDiff = exports.hash = exports.downloadURI = exports.makeDataURI = exports.mkButton = exports.runForPath = exports.decodeHtml = exports.retrySelector = exports.ready = void 0;
 const SipHash_js_1 = require("./SipHash.js");
 const ready = (fn) => {
     if (document.readyState !== 'loading') {
@@ -53,6 +53,15 @@ const runForPath = (path, func) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.runForPath = runForPath;
+const mkButton = (label, action, classes = []) => {
+    const button = document.createElement('button');
+    button.setAttribute('value', label);
+    button.innerHTML = label;
+    button.addEventListener('click', action);
+    button.classList.add(...classes);
+    return button;
+};
+exports.mkButton = mkButton;
 const makeDataURI = (mimeType, data) => `data:${mimeType};charset=utf-8;base64,${btoa(unescape(encodeURIComponent(data)))}`;
 exports.makeDataURI = makeDataURI;
 const downloadURI = (uri, name) => {
@@ -84,6 +93,7 @@ const sDate = (d) => (0, exports.simpleDate)(d)
     .filter((_, i) => i > 0)
     .join('-');
 exports.sDate = sDate;
+// @todo make it use the template XD
 const dateFmt = (d, format = '') => {
     const year = d.getFullYear();
     const mon = `${(d.getMonth() + 1 < 10 ? '0' : '')}${d.getMonth() + 1}`;

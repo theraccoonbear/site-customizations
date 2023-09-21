@@ -130,6 +130,14 @@ var runForPath = async (path, func) => {
     });
   }
 };
+var mkButton = (label, action, classes = []) => {
+  const button = document.createElement("button");
+  button.setAttribute("value", label);
+  button.innerHTML = label;
+  button.addEventListener("click", action);
+  button.classList.add(...classes);
+  return button;
+};
 var makeDataURI = (mimeType, data) => `data:${mimeType};charset=utf-8;base64,${btoa(unescape(encodeURIComponent(data)))}`;
 var downloadURI = (uri, name) => {
   var link = document.createElement("a");
@@ -387,13 +395,6 @@ var getEmpHead = async (c) => {
   } catch (err) {
     return null;
   }
-};
-var mkButton = (label, action) => {
-  const button = document.createElement("button");
-  button.setAttribute("value", label);
-  button.innerHTML = label;
-  button.addEventListener("click", action);
-  return button;
 };
 var begin = async () => {
   const header = await getEmpHead();

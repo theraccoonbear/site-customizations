@@ -234,14 +234,6 @@ const getEmpHead = async (c?: number): Promise<Element | null> => {
   }
 };
 
-const mkButton = (label: string, action: (this: HTMLButtonElement, ev: MouseEvent) => any): HTMLButtonElement => {
-  const button = document.createElement('button');
-  button.setAttribute('value', label);
-  button.innerHTML = label;
-  button.addEventListener('click', action);
-  return button
-};
-
 const getToolbar = async (c?: number): Promise<HTMLElement | null> => {
   const cnt = typeof c === 'undefined' ? 1 : c;
   dbg(`tb/inv=${cnt}`);
@@ -271,9 +263,9 @@ const begin = async () => {
     return;
   }
 
-  const butVCal = mkButton('vCal (Google)', () => generateCalendar('Me', 'me@host.com', 'vcs'));
-  const butICal = mkButton('iCal (Outlook)', () => generateCalendar('Me', 'me@host.com', 'ics'));
-  const butTxtCal = mkButton('Text', () => generateSimpleCalendar());
+  const butVCal = std.mkButton('vCal (Google)', () => generateCalendar('Me', 'me@host.com', 'vcs'));
+  const butICal = std.mkButton('iCal (Outlook)', () => generateCalendar('Me', 'me@host.com', 'ics'));
+  const butTxtCal = std.mkButton('Text', () => generateSimpleCalendar());
   header.parentElement.appendChild(butVCal);
   header.parentElement.appendChild(butICal);
   header.parentElement.appendChild(butTxtCal);

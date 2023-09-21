@@ -41,7 +41,17 @@ export const runForPath = async (path: string, func: Function) => {
     })
   }
 };
-  
+
+export const mkButton = (label: string, action: (this: HTMLButtonElement, ev: MouseEvent) => any, classes: string[] = []): HTMLButtonElement => {
+  const button = document.createElement('button');
+  button.setAttribute('value', label);
+  button.innerHTML = label;
+  button.addEventListener('click', action);
+  button.classList.add(...classes);
+  return button
+};
+
+
 export const makeDataURI = (mimeType: string, data: string) => 
   `data:${mimeType};charset=utf-8;base64,${btoa(unescape(encodeURIComponent(data)))}`;
   
@@ -74,6 +84,7 @@ export const sDate = (d: Date): string => simpleDate(d)
   .filter((_, i) => i > 0)
   .join('-');
 
+// @todo make it use the template XD
 export const dateFmt = (d: Date, format: string = ''): string => {
   const year = d.getFullYear();
   const mon = `${(d.getMonth() + 1 < 10 ? '0' : '')}${d.getMonth() + 1}`;

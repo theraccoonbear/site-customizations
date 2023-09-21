@@ -73,13 +73,13 @@ const findProgram = (programs, title) => {
     const rgxFindProgram = new RegExp(title, 'i');
     return [...programs.filter((p) => rgxFindProgram.test(p.Title)), null][0];
 };
-std.runForPath('Prodeal.aspx', () => __awaiter(void 0, void 0, void 0, function* () {
+const doIt = () => __awaiter(void 0, void 0, void 0, function* () {
     const programs = yield getPrograms();
     console.log('programs:', programs);
-    const fjallraven = findProgram(programs, 'Fjallraven Special');
-    const adidas = findProgram(programs, 'Adidas Over');
-    console.log('Fjallraven:', fjallraven);
-    console.log('Adidas:', adidas);
+    // const fjallraven = findProgram(programs, 'Fjallraven Special');
+    // const adidas = findProgram(programs, 'Adidas Over');
+    // console.log('Fjallraven:', fjallraven);
+    // console.log('Adidas:', adidas);
     const byWhoCanUse = {};
     programs.forEach((p) => {
         const type = p.ProgramFor.results[0];
@@ -94,4 +94,10 @@ std.runForPath('Prodeal.aspx', () => __awaiter(void 0, void 0, void 0, function*
     console.log('everything:', total);
     const data = JSON.stringify(total, null, 2).replace(/[\u00A0-\u2666]/g, (c) => `&#${c.charCodeAt(0)};`);
     std.downloadURI(std.makeDataURI('text/json', data), 'prodeals.json');
+});
+std.runForPath('Prodeal.aspx', () => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const header = document.querySelector('h1#pageTitle');
+    const button = std.mkButton('Download Programs', doIt);
+    (_a = header === null || header === void 0 ? void 0 : header.parentElement) === null || _a === void 0 ? void 0 : _a.appendChild(button);
 }));

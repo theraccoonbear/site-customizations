@@ -222,13 +222,6 @@ const getEmpHead = (c) => __awaiter(void 0, void 0, void 0, function* () {
         return null;
     }
 });
-const mkButton = (label, action) => {
-    const button = document.createElement('button');
-    button.setAttribute('value', label);
-    button.innerHTML = label;
-    button.addEventListener('click', action);
-    return button;
-};
 const getToolbar = (c) => __awaiter(void 0, void 0, void 0, function* () {
     const cnt = typeof c === 'undefined' ? 1 : c;
     dbg(`tb/inv=${cnt}`);
@@ -257,9 +250,9 @@ const begin = () => __awaiter(void 0, void 0, void 0, function* () {
         console.error(`Couldn't find the header`);
         return;
     }
-    const butVCal = mkButton('vCal (Google)', () => generateCalendar('Me', 'me@host.com', 'vcs'));
-    const butICal = mkButton('iCal (Outlook)', () => generateCalendar('Me', 'me@host.com', 'ics'));
-    const butTxtCal = mkButton('Text', () => generateSimpleCalendar());
+    const butVCal = std.mkButton('vCal (Google)', () => generateCalendar('Me', 'me@host.com', 'vcs'));
+    const butICal = std.mkButton('iCal (Outlook)', () => generateCalendar('Me', 'me@host.com', 'ics'));
+    const butTxtCal = std.mkButton('Text', () => generateSimpleCalendar());
     header.parentElement.appendChild(butVCal);
     header.parentElement.appendChild(butICal);
     header.parentElement.appendChild(butTxtCal);
