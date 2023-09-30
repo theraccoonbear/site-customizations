@@ -2,24 +2,26 @@ import * as std from './lib/standard';
 
 const debugging = false;
 
-const JOB_FUNCTION: {[key: string]: any} = {
-  "Footwear":            "👞",
-  "Stocking":            "🛒",
-  "Customer Service":    "💳",
-  "Camp":                "🏕️",
-  "Hardgoods":           "🦾",
-  "Action Sports":       "🛶",
-  "Shipping":            "📦",
+const JOB_FUNCTION: { [key: string]: any } = {
+  "Footwear": "👞",
+  "Stocking": "🛒",
+  "Customer Service": "💳",
+  "Camp": "🏕️",
+  "Hardgoods": "🦾",
+  "Action Sports": "🛶",
+  "Shipping": "📦",
   "New Hire Onboarding": "🧑‍🎓",
-  "Operations-TRN":      "🧑‍🎓",
-  "Clothing":            "👕",
-  "Softgoods":           "🧣",
-  "Shop":                "🔧",
-  "Shop Management":     "🧑‍🔧",
-  "Order Fulfillment":   "📦",
-  "Visual":              "🧑‍🎨",
-  "Banker":              "🏦",
-  "Management":          "📋",
+  "Operations-TRN": "🧑‍🎓",
+  "Guided Shift Cross-Training": "🧑‍🎓",
+  "Clothing": "👕",
+  "Softgoods": "🧣",
+  "Shop": "🔧",
+  "Shop Management": "🧑‍🔧",
+  "Order Fulfillment": "📦",
+  "Visual": "🧑‍🎨",
+  "Banker": "🏦",
+  "Management": "📋",
+  "Price Changes": "🏷️",
 };
 
 const dbg = (...stuff: any) => debugging ? console.log(...stuff) : null;
@@ -38,7 +40,7 @@ const iCalWrapping = (s: string): string => {
     .trim();
 };
 
-const prepEvent= (ev: any): any => {
+const prepEvent = (ev: any): any => {
   const e = { ...ev };
   e.startTime = new Date(e.orderedSegments[0].startDateTimeUTC);
   e.endTime = new Date(e.orderedSegments[e.orderedSegments.length - 1].endDateTimeUTC);
@@ -53,39 +55,39 @@ const prepEvent= (ev: any): any => {
       e.id = idParts.pop() || 'foo';
       if (typeof e.timeByJob[e.id] === 'undefined') { e.timeByJob[e.id] = 0; }
       e.timeByJob[e.id] += std.minutesDiff(s.startDateTimeUTC, s.endDateTimeUTC);
-      if (e.timeByJob[e.id] >= max) { 
+      if (e.timeByJob[e.id] >= max) {
         max = e.timeByJob[e.id];
         e.primaryShiftJob = e.id;
       }
       return e;
     });
 
-  e.breaks = e.orderedSegments.filter((s: any) => 
+  e.breaks = e.orderedSegments.filter((s: any) =>
     s.segmentType.symbolicId === 'break_segment');
 
   e.breakTime = e.breaks
-    .map((b: any) => 
+    .map((b: any) =>
       std.minutesDiff(b.startDateTimeUTC, b.endDateTimeUTC))
-    .reduce((p: number, c: number) => 
+    .reduce((p: number, c: number) =>
       p + c, 0);
 
-  e.breakTimes = e.breaks.map((b: any) => 
+  e.breakTimes = e.breaks.map((b: any) =>
     std.time(b.startDateTimeUTC))
     .join(', ');
 
-  e.breakDisplay = e.breakTime > 0 ? `${e.breakTime} minutes break at ${e.breakTimes}`: 'no breaks';
+  e.breakDisplay = e.breakTime > 0 ? `${e.breakTime} minutes break at ${e.breakTimes}` : 'no breaks';
   e.elapsed = std.hoursDiff(e.startTime, e.endTime);
   e.dispElapsed = e.elapsed.toPrecision(3).replace(/0+$/, '0');
   e.paidElapsed = (e.elapsed - (e.breakTime / 60)).toPrecision(3).replace(/0+$/, '0');
   return e;
 }
 
-const summaryLine = (e: any): string => 
+const summaryLine = (e: any): string =>
   `${EMPLOYER} ${jobLine(e.primaryShiftJob)} from ${std.time(e.startTime)} to ${std.time(e.endTime)} (${e.dispElapsed} ` +
   `[${e.paidElapsed}] hours)`;
 
-const descriptionLine = (e: any): string => 
-  `Shift in ${jobLine(e.primaryShiftJob)} at ${EMPLOYER} from ${std.time(e.startTime)} to ${std.time(e.endTime)} on ` + 
+const descriptionLine = (e: any): string =>
+  `Shift in ${jobLine(e.primaryShiftJob)} at ${EMPLOYER} from ${std.time(e.startTime)} to ${std.time(e.endTime)} on ` +
   `${std.date(e.startTime)}. ${e.dispElapsed} hours with ${e.breakDisplay}`
 
 const iCalEvent = (ev: any, name: string, email: string) => {
@@ -98,7 +100,7 @@ const iCalEvent = (ev: any, name: string, email: string) => {
 
   const iCal = [
     `BEGIN:VEVENT`,
-    `UID: ${ std.hash(std.iCalDate(e.startTime) + std.iCalDate(e.endTime)) }`,
+    `UID: ${std.hash(std.iCalDate(e.startTime) + std.iCalDate(e.endTime))}`,
     `DTSTAMP${tzid}:${std.iCalDate(e.startTime)}`,
     `ORGANIZER;CN=${name}:MAILTO:${email}`,
     `DTSTART${tzid}:${std.iCalDate(e.startTime)}`,
@@ -109,8 +111,8 @@ const iCalEvent = (ev: any, name: string, email: string) => {
   ].join("\r\n")
 
   return {
-  ...e,
-  iCal
+    ...e,
+    iCal
   };
 };
 
@@ -119,14 +121,14 @@ const apiUri = (path: string) => `https://${KRO_HOSTNAME}${path}`;
 const getXSRFToken = (): string => document.cookie
   .split(/;\s*/)
   .map(s => s.split(/=/))
-  .filter(p => p[0]=='XSRF-TOKEN')
+  .filter(p => p[0] == 'XSRF-TOKEN')
   .reduce((_, c) => c[1], "");
 
 const jobLine = (job: string) => `${job}${typeof JOB_FUNCTION[job] !== 'undefined' ? ` ${JOB_FUNCTION[job]}` : ''}`
 
 const gengerateCalendarRequest = () => {
   const range = std.getDateRange();
-  const startDate =  std.simpleDate(range[0]);
+  const startDate = std.simpleDate(range[0]);
   const endDate = std.simpleDate(range[1]);
 
   return {
@@ -154,8 +156,8 @@ const gengerateCalendarRequest = () => {
 
 const getUserInfo = async () => std.getREST(apiUri('/get/UserInfo'))
 
-const calendarEventFilter = (e: any): boolean => { 
-  const retVal = e && 
+const calendarEventFilter = (e: any): boolean => {
+  const retVal = e &&
     e.orderedSegments &&
     Array.isArray(e.orderedSegments) &&
     e.orderedSegments.length >= 1 &&
@@ -179,15 +181,15 @@ const fetchCalendar = async (name: string = '', email: string = '') => {
     .map((e: any) => iCalEvent(e, name, email));
 };
 
-const simpleEntry = (ev: any): string => prepEvent(ev) && 
-    [` *`, 
-      std.date(ev.startTime), 
-      std.time(ev.startTime),
-      'to',
-      std.time(ev.endTime),
-      'in',
-      jobLine(ev.primaryShiftJob)
-    ].join(' ');
+const simpleEntry = (ev: any): string => prepEvent(ev) &&
+  [` *`,
+    std.date(ev.startTime),
+    std.time(ev.startTime),
+    'to',
+    std.time(ev.endTime),
+    'in',
+    jobLine(ev.primaryShiftJob)
+  ].join(' ');
 
 
 const generateSimpleCalendar = async () => {
@@ -249,7 +251,7 @@ const getToolbar = async (c?: number): Promise<HTMLElement | null> => {
     return null;
   }
   await std.sleep(250);
-  if (toolbar === null) { 
+  if (toolbar === null) {
     dbg(`tb/recinv=${cnt}`);
     return getToolbar(cnt + 1);
   }

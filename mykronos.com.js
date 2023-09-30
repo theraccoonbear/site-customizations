@@ -239,6 +239,7 @@ var JOB_FUNCTION = {
   "Shipping": "\u{1F4E6}",
   "New Hire Onboarding": "\u{1F9D1}\u200D\u{1F393}",
   "Operations-TRN": "\u{1F9D1}\u200D\u{1F393}",
+  "Guided Shift Cross-Training": "\u{1F9D1}\u200D\u{1F393}",
   "Clothing": "\u{1F455}",
   "Softgoods": "\u{1F9E3}",
   "Shop": "\u{1F527}",
@@ -246,7 +247,8 @@ var JOB_FUNCTION = {
   "Order Fulfillment": "\u{1F4E6}",
   "Visual": "\u{1F9D1}\u200D\u{1F3A8}",
   "Banker": "\u{1F3E6}",
-  "Management": "\u{1F4CB}"
+  "Management": "\u{1F4CB}",
+  "Price Changes": "\u{1F3F7}\uFE0F"
 };
 var KRO_HOSTNAME = srt(atob("ZXJwZXJuZ3ZiYW55cmRodmMtZmYzLmNlcS56bHhlYmFiZi5wYno="));
 var EMPLOYER = atob("UkVJ");

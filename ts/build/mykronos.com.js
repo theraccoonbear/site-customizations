@@ -44,6 +44,7 @@ const JOB_FUNCTION = {
     "Shipping": "📦",
     "New Hire Onboarding": "🧑‍🎓",
     "Operations-TRN": "🧑‍🎓",
+    "Guided Shift Cross-Training": "🧑‍🎓",
     "Clothing": "👕",
     "Softgoods": "🧣",
     "Shop": "🔧",
@@ -52,6 +53,7 @@ const JOB_FUNCTION = {
     "Visual": "🧑‍🎨",
     "Banker": "🏦",
     "Management": "📋",
+    "Price Changes": "🏷️",
 };
 const dbg = (...stuff) => debugging ? console.log(...stuff) : null;
 const MAX_TRIES = 100;
