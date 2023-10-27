@@ -143,7 +143,7 @@ console.log("your script debugging entry point here...");
 // src/sharepoint.com.ts
 var getPrograms = async () => {
   const date = dateFmt(/* @__PURE__ */ new Date(), "MM/dd/y");
-  const url = `https://reiweb.sharepoint.com/sites/Forms/Prodeal/admin/_api/web/lists/getbytitle('Vendor%20Programs')/items?$select=ID,%20DateExpires,%20Title,%20OfferSummary,%20Website/Url,%20ProdealDetails,%20ProgramFor,%20VendorCodeType,%20ShippingDetails,%20CodeNotificationFrequency,%20NotificationSent&$filter=%20(%20DateAvailable%20le%20%27${date}%27%20and%20DateExpires%20ge%20%27${date}%27)%20and%20(%20ProgramStatus%20eq%20%27Active%27%20or%20ProgramStatus%20eq%20%27Ongoing%20(month%20to%20month)%27%20)&$orderby=Title&$top=5000`;
+  const url = `https://reiweb.sharepoint.com/sites/Forms/Prodeal/admin/_api/web/lists/getbytitle('Vendor%20Programs')/items?$select=ID,%20DateExpires,%20Title,%20OfferSummary,%20Website/Url,%20ProdealDetails,%20ProgramFor,%20VendorCodeType,%20ShippingDetails,%20CodeNotificationFrequency,%20NotificationSent,%20Modified&$filter=%20(%20DateAvailable%20le%20%27${date}%27%20and%20DateExpires%20ge%20%27${date}%27)%20and%20(%20ProgramStatus%20eq%20%27Active%27%20or%20ProgramStatus%20eq%20%27Ongoing%20(month%20to%20month)%27%20)&$orderby=Title&$top=5000`;
   console.log("Date:", date);
   console.log("URL:", url);
   const resp = await fetch(url, {
