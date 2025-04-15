@@ -157,7 +157,7 @@ var addDays = (date2, days) => {
 var simpleDate = (d) => d.toISOString().split("T")[0];
 var getDateRange = (range, now = /* @__PURE__ */ new Date()) => [
   addDays(now, -Math.abs(range || 14)),
-  addDays(now, Math.abs(range || 14))
+  addDays(now, Math.abs(range || 32))
 ];
 var iCalDate = (dt) => {
   const d = new Date(dt);

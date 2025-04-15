@@ -31,7 +31,7 @@ export const decodeHtml = (html: any): string => {
   return txt.value;
 };
   
-export const runForPath = async (path: string, func: Function) => {
+export const runForPath = async (path: string | RegExp, func: Function) => {
   const rgx = new RegExp(path, 'i');
   if (rgx.test(document.location.pathname)) {
     console.log(`Conditional path match for "${path}"`);
@@ -97,7 +97,7 @@ export const dateAdd = (date: any, days: number): string => simpleDate(addDays(d
 export const getDateRange = (range?: number, now: Date = new Date()): Date[] => 
   [
     addDays(now, -Math.abs(range || 14)),
-    addDays(now, Math.abs(range || 14))
+    addDays(now, Math.abs(range || 32))
   ];
 
 export const iCalDate = (dt: any): string => {
